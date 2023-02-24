@@ -1,0 +1,351 @@
+import akunAdminModel from "../model/akun_admin.model.js";
+import akunSiswaModel from "../model/akun_siswa.model.js";
+import informasiModel from "../model/informasi.model.js";
+import galeriModel from "../model/galeri.model.js";
+import dataSiswa from "../model/data_siswa.model.js";
+import dataOrangTua from "../model/data_orang_tua.model.js";
+import dataAlamat from "../model/data_alamat.model.js";
+import prestasiSiswa from "../model/prestasi_siswa.model.js";
+
+import response from "../response/index.js";
+import fs from "fs";
+
+const { setContent, getContent } = response;
+
+const getAdmin = async (req, res) => {
+  try {
+    const getAdmin = await akunAdminModel.findByPk(
+      req.sessionData.id_akun_admin,
+      {
+        attributes: {
+          exclude: ["password"],
+        },
+      }
+    );
+    if (!getAdmin) {
+      setContent(404, "Admin Tidak Ditemukan!");
+      return res.status(404).json(getContent());
+    } else {
+      setContent(200, getAdmin);
+      return res.status(200).json(getContent());
+    }
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const getInformasi = async (req, res) => {
+  try {
+    const informasi = await informasiModel.findByPk(req.body.id_informasi);
+    if (!informasi) {
+      setContent(404, "Informasi Tidak Ditemukan!");
+      return res.status(404).json(getContent());
+    } else {
+      setContent(200, informasi);
+      return res.status(200).json(getContent());
+    }
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const postInformasi = async (req, res) => {
+  if (req.file == undefined) {
+    setContent(201, "image upload failed.");
+    return res.status(201).json(getContent());
+  } else {
+    try {
+      const newInformasi = new informasiModel(req.body);
+      newInformasi.id_akun_admin = req.sessionData.id_akun_admin;
+      newInformasi.banner = req.file.path;
+
+      await newInformasi.save();
+      setContent(200, "Informasi Berhasil Ditambahkan");
+      return res.status(200).json(getContent());
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+  }
+};
+
+const putContentInformasi = async (req, res) => {
+  req.body.id_akun_admin = req.sessionData.id_akun_admin;
+
+  const findInformasi = await informasiModel.findOne({
+    where: {
+      id_informasi: req.body.id_informasi,
+    },
+  });
+
+  if (!findInformasi) {
+    setContent(200, "Konten Tidak Ditemukan!");
+    return res.status(200).json(getContent());
+  } else {
+    try {
+      await informasiModel.update(req.body, {
+        where: {
+          id_informasi: req.body.id_informasi,
+        },
+      });
+      setContent(200, "Konten Informasi Berhasil Diubah!");
+      return res.status(200).json(getContent());
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+  }
+};
+
+const delInformasi = async (req, res) => {
+  try {
+    const getInformasi = await informasiModel.findByPk(req.body.id_informasi);
+    if (!getInformasi) {
+      setContent(500, "Informasi tidak ditemukan!");
+      return res.status(500).json(getContent());
+    }
+    const getGaleri = await galeriModel.findAll({
+      where: {
+        id_informasi: req.body.id_informasi,
+      },
+    });
+
+    try {
+      getGaleri.map(async (item) => {
+        fs.unlink("./" + item.foto, (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
+      });
+      await galeriModel.destroy({
+        where: {
+          id_informasi: req.body.id_informasi,
+        },
+      });
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+
+    try {
+      fs.unlink("./" + getInformasi.banner, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+      await informasiModel.destroy({
+        where: {
+          id_informasi: req.body.id_informasi,
+        },
+      });
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+
+    setContent(200, "Konten Informasi Berhasil Dihapus!");
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const postGaleri = async (req, res) => {
+  if (req.files == undefined) {
+    setContent(201, "image upload failed.");
+    return res.status(201).json(getContent());
+  } else {
+    try {
+      req.files.map(async (item) => {
+        const newGaleri = new galeriModel(req.body);
+        newGaleri.id_informasi = req.body.id_informasi;
+        newGaleri.foto = item.path;
+
+        await newGaleri.save();
+      });
+      setContent(200, "Semua Gambar Berhasil Ditambahkan");
+      return res.status(200).json(getContent());
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+  }
+};
+
+const isiNilai = async (req, res) => {
+  const findSiswa = await akunSiswaModel.findOne({
+    where: {
+      id_akun_siswa: req.body.id_akun_siswa,
+    },
+  });
+
+  if (!findSiswa) {
+    setContent(200, "Siswa Tidak Ditemukan!");
+    return res.status(200).json(getContent());
+  } else {
+    try {
+      await akunSiswaModel.update(
+        {
+          nilai: req.body.nilai,
+          keterangan: req.body.keterangan,
+        },
+        {
+          where: {
+            id_akun_siswa: req.body.id_akun_siswa,
+          },
+        }
+      );
+      setContent(200, "Nilai dan Keterangan Berhasil Disimpan!");
+      return res.status(200).json(getContent());
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+  }
+};
+
+const dashboardAdmin = async (req, res) => {
+  try {
+    const getAllSiswa = await akunSiswaModel.findAll();
+    const getAllMTS = await akunSiswaModel.findAll({
+      where: {
+        keterangan: 1,
+      },
+    });
+    const getAllMPTS = await akunSiswaModel.findAll({
+      where: {
+        keterangan: 0,
+      },
+    });
+
+    const result = {
+      allSiswa: getAllSiswa.length,
+      allMTSSiswa: getAllMTS.length,
+      allMPTSSiswa: getAllMPTS.length,
+    };
+    setContent(200, result);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const dataSiswaAdmin = async (req, res) => {
+  try {
+    const [getAllSiswa, metadata] = await akunSiswaModel.sequelize.query(
+      "SELECT * from datasiswaadmin"
+    );
+
+    setContent(200, getAllSiswa);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const searchSiswaAdmin = async (req, res) => {
+  try {
+    const [getAllSiswa, metadata] = await akunSiswaModel.sequelize.query(
+      `SELECT * FROM datasiswaadmin WHERE nama_lengkap LIKE '%` +
+        req.body.nama +
+        `%'`
+    );
+
+    setContent(200, getAllSiswa);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const detailSiswaAdmin = async (req, res) => {
+  try {
+    const getDataSiswa = await dataSiswa.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+      },
+    });
+    const getDataOrangtua = await dataOrangTua.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+      },
+    });
+    const getDataAlamat = await dataAlamat.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+      },
+    });
+    const getDataPrestasi = await prestasiSiswa.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+      },
+    });
+
+    const result = {
+      data_siswa: getDataSiswa,
+      data_orangtua: getDataOrangtua,
+      data_alamat: getDataAlamat,
+      data_prestasi: getDataPrestasi,
+    };
+    setContent(200, result);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const cetakDataAdmin = async (req, res) => {
+  try {
+    const [getCetakData, metadata] = await akunSiswaModel.sequelize.query(
+      "SELECT * from cetakdata"
+    );
+
+    setContent(200, getCetakData);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const searchCetakDataAdmin = async (req, res) => {
+  try {
+    const [getCetakData, metadata] = await akunSiswaModel.sequelize.query(
+      "SELECT * from cetakdata where tahun_masuk = '" +
+        req.body.tahun_masuk +
+        "'"
+    );
+
+    setContent(200, getCetakData);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+export default {
+  getAdmin,
+  getInformasi,
+  postInformasi,
+  putContentInformasi,
+  delInformasi,
+  postGaleri,
+  isiNilai,
+  dashboardAdmin,
+  dataSiswaAdmin,
+  searchSiswaAdmin,
+  detailSiswaAdmin,
+  cetakDataAdmin,
+  searchCetakDataAdmin,
+};
