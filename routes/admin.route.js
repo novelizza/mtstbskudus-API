@@ -39,6 +39,11 @@ adminRoutes
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.getAdmin);
 
 adminRoutes
+  .route("/add-admin")
+  //web admin
+  .post(middlewareCtrl.checkSessionAdmin, adminCtrl.postAdmin);
+
+adminRoutes
   .route("/informasi")
   //web admin
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.getInformasi)

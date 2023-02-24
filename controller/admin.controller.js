@@ -9,6 +9,7 @@ import prestasiSiswa from "../model/prestasi_siswa.model.js";
 
 import response from "../response/index.js";
 import fs from "fs";
+import crypto from "crypto-js";
 
 const { setContent, getContent } = response;
 
@@ -33,6 +34,25 @@ const getAdmin = async (req, res) => {
     setContent(500, error);
     return res.status(500).json(getContent());
   }
+};
+
+const postAdmin = async (req, res) => {
+  // if (req.file == undefined) {
+  //   setContent(201, "image upload failed.");
+  //   return res.status(201).json(getContent());
+  // } else {
+  try {
+    const newAdmin = new akunAdminModel(req.body);
+    newAdmin.password = crypto.MD5(req.body.password).toString();
+
+    await newAdmin.save();
+    setContent(200, "Admin Berhasil Ditambahkan");
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+  // }
 };
 
 const getInformasi = async (req, res) => {
@@ -336,6 +356,7 @@ const searchCetakDataAdmin = async (req, res) => {
 
 export default {
   getAdmin,
+  postAdmin,
   getInformasi,
   postInformasi,
   putContentInformasi,
