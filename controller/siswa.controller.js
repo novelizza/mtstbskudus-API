@@ -7,6 +7,7 @@ import prestasiSiswaModel from "../model/prestasi_siswa.model.js";
 import response from "../response/index.js";
 import crypto from "crypto-js";
 import moment from "moment";
+import fs from "fs";
 
 const { setContent, getContent } = response;
 
@@ -35,25 +36,114 @@ const getSiswa = async (req, res) => {
 };
 
 const postSiswa = async (req, res) => {
-  if (req.file == undefined) {
-    setContent(201, "image upload failed.");
-    return res.status(201).json(getContent());
-  } else {
-    try {
-      const newSiswa = new akunSiswaModel(req.body);
-      newSiswa.password = crypto.MD5(req.body.password).toString();
-      newSiswa.avatar = req.file.path;
-      newSiswa.tahun_masuk =
-        moment().year() + "/" + (Number(moment().year()) + 1);
-      newSiswa.bayar = 0;
+  const akunSiswa = await akunSiswaModel.findOne({
+    where: {
+      username: req.body.username,
+    },
+  });
 
-      await newSiswa.save();
-      setContent(200, "Siswa Berhasil Ditambahkan");
+  if (!akunSiswa) {
+    if (req.file == undefined) {
+      setContent(201, "image upload failed.");
+      return res.status(201).json(getContent());
+    } else {
+      try {
+        const newSiswa = new akunSiswaModel(req.body);
+        newSiswa.password = crypto.MD5(req.body.password).toString();
+        newSiswa.avatar = req.file.path;
+        newSiswa.tahun_masuk =
+          moment().year() + "/" + (Number(moment().year()) + 1);
+        newSiswa.bayar = 0;
+
+        await newSiswa.save();
+        setContent(200, "Siswa Berhasil Ditambahkan");
+        return res.status(200).json(getContent());
+      } catch (error) {
+        setContent(500, error);
+        return res.status(500).json(getContent());
+      }
+    }
+  } else {
+    setContent(500, "Username Telah Terdaftar");
+    return res.status(500).json(getContent());
+  }
+};
+
+const ubahSiswa = async (req, res) => {
+  const akunSiswa = await akunSiswaModel.findOne({
+    where: {
+      id_akun_siswa: req.sessionData.id_akun_siswa,
+    },
+  });
+
+  if (akunSiswa) {
+    try {
+      req.body.password === ""
+        ? (req.body.password = akunSiswa.password)
+        : (req.body.password = crypto.MD5(req.body.password).toString());
+
+      console.log(req.body);
+
+      await akunSiswaModel.update(req.body, {
+        where: {
+          id_akun_siswa: req.sessionData.id_akun_siswa,
+        },
+      });
+
+      setContent(200, "Siswa Berhasil Diubah");
       return res.status(200).json(getContent());
     } catch (error) {
-      setContent(500, error);
+      setContent(500, "Siswa Gagal Diubah");
       return res.status(500).json(getContent());
     }
+  } else {
+    setContent(500, "Username Telah Terdaftar");
+    return res.status(500).json(getContent());
+  }
+};
+
+const ubahAvaSiswa = async (req, res) => {
+  const akunSiswa = await akunSiswaModel.findOne({
+    where: {
+      id_akun_siswa: req.sessionData.id_akun_siswa,
+    },
+  });
+
+  if (akunSiswa) {
+    console.log(akunSiswa.avatar);
+    if (req.file == undefined) {
+      setContent(201, "image upload failed.");
+      return res.status(201).json(getContent());
+    } else {
+      try {
+        fs.unlink("./" + akunSiswa.avatar, (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
+
+        await akunSiswaModel.update(
+          {
+            avatar: req.file.path,
+          },
+          {
+            where: {
+              id_akun_siswa: req.sessionData.id_akun_siswa,
+            },
+          }
+        );
+
+        setContent(200, "Siswa Berhasil Diubah");
+        return res.status(200).json(getContent());
+      } catch (error) {
+        setContent(500, "Siswa Gagal Diubah");
+        return res.status(500).json(getContent());
+      }
+    }
+  } else {
+    setContent(500, "Username Telah Terdaftar");
+    return res.status(500).json(getContent());
   }
 };
 
@@ -280,6 +370,8 @@ const getDataPrestasi = async (req, res) => {
 export default {
   getSiswa,
   postSiswa,
+  ubahSiswa,
+  ubahAvaSiswa,
   data_siswa,
   getDataSiswa,
   data_orang_tua,

@@ -25,7 +25,17 @@ siswaRoutes
   //web siswa
   .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getSiswa)
   //register siswa
-  .post(uploadAvatar.single("avatar"), siswaCtrl.postSiswa);
+  .post(uploadAvatar.single("avatar"), siswaCtrl.postSiswa)
+  .put(middlewareCtrl.checkSessionSiswa, siswaCtrl.ubahSiswa);
+
+siswaRoutes
+  .route("/ubah-avatar")
+  //ubah ava only
+  .put(
+    middlewareCtrl.checkSessionSiswa,
+    uploadAvatar.single("avatar"),
+    siswaCtrl.ubahAvaSiswa
+  );
 
 siswaRoutes
   .route("/data-siswa")

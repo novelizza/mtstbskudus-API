@@ -6,6 +6,7 @@ import dataSiswa from "../model/data_siswa.model.js";
 import dataOrangTua from "../model/data_orang_tua.model.js";
 import dataAlamat from "../model/data_alamat.model.js";
 import prestasiSiswa from "../model/prestasi_siswa.model.js";
+import brosurModel from "../model/brosur.model.js";
 
 import response from "../response/index.js";
 import fs from "fs";
@@ -42,12 +43,61 @@ const postAdmin = async (req, res) => {
   //   return res.status(201).json(getContent());
   // } else {
   try {
-    const newAdmin = new akunAdminModel(req.body);
-    newAdmin.password = crypto.MD5(req.body.password).toString();
+    const getDataAkun = await akunAdminModel.findOne({
+      where: {
+        username: req.body.username,
+      },
+    });
 
-    await newAdmin.save();
-    setContent(200, "Admin Berhasil Ditambahkan");
-    return res.status(200).json(getContent());
+    if (!getDataAkun) {
+      const newAdmin = new akunAdminModel(req.body);
+      newAdmin.password = crypto.MD5(req.body.password).toString();
+
+      await newAdmin.save();
+      setContent(200, "Admin Berhasil Ditambahkan");
+      return res.status(200).json(getContent());
+    } else {
+      setContent(500, "Username Telah Tersedia");
+      return res.status(200).json(getContent());
+    }
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+  // }
+};
+
+const ubahAdmin = async (req, res) => {
+  // if (req.file == undefined) {
+  //   setContent(201, "image upload failed.");
+  //   return res.status(201).json(getContent());
+  // } else {
+  try {
+    const getDataAkun = await akunAdminModel.findByPk(
+      req.sessionData.id_akun_admin
+    );
+
+    if (getDataAkun) {
+      req.body.password === ""
+        ? (req.body.password = getDataAkun.password)
+        : (req.body.password = crypto.MD5(req.body.password).toString());
+
+      try {
+        await akunAdminModel.update(req.body, {
+          where: {
+            id_akun_admin: req.sessionData.id_akun_admin,
+          },
+        });
+        setContent(200, "Admin Berhasil Diubah");
+        return res.status(200).json(getContent());
+      } catch (error) {
+        setContent(200, "Admin Gagal Diubah");
+        return res.status(200).json(getContent());
+      }
+    } else {
+      setContent(200, "Admin Tidak Ditemukan");
+      return res.status(200).json(getContent());
+    }
   } catch (error) {
     setContent(500, error);
     return res.status(500).json(getContent());
@@ -289,6 +339,14 @@ const searchSiswaAdmin = async (req, res) => {
 
 const detailSiswaAdmin = async (req, res) => {
   try {
+    const getDataAkun = await akunSiswaModel.findOne({
+      attributes: {
+        exclude: ["password"],
+      },
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+      },
+    });
     const getDataSiswa = await dataSiswa.findOne({
       where: {
         id_akun_siswa: req.body.id_akun_siswa,
@@ -311,6 +369,7 @@ const detailSiswaAdmin = async (req, res) => {
     });
 
     const result = {
+      data_akun_siswa: getDataAkun,
       data_siswa: getDataSiswa,
       data_orangtua: getDataOrangtua,
       data_alamat: getDataAlamat,
@@ -354,9 +413,77 @@ const searchCetakDataAdmin = async (req, res) => {
   }
 };
 
+const postBrosur = async (req, res) => {
+  if (req.file == undefined) {
+    setContent(201, "image upload failed.");
+    return res.status(201).json(getContent());
+  } else {
+    try {
+      let brosur = await brosurModel.findOrCreate({
+        where: {
+          id_brosur: 1,
+        },
+        defaults: {
+          link: req.file.path,
+        },
+      });
+
+      if (brosur[1] === false) {
+        try {
+          const oldBrosur = await brosurModel.findByPk(1);
+
+          fs.unlink("./" + oldBrosur.link, (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+          });
+
+          await brosurModel.update(
+            {
+              link: req.file.path,
+            },
+            {
+              where: {
+                id_brosur: 1,
+              },
+            }
+          );
+        } catch (error) {
+          setContent(500, error);
+          return res.status(500).json(getContent());
+        }
+      }
+
+      setContent(200, "Brosur Berhasil Ditambahkan!");
+      return res.status(200).json(getContent());
+    } catch (error) {
+      setContent(500, error);
+      return res.status(500).json(getContent());
+    }
+  }
+};
+
+const getDataBrosur = async (req, res) => {
+  try {
+    const getLinkBrosur = await brosurModel.findByPk(1);
+    if (!getLinkBrosur) {
+      setContent(404, "Link Tidak Ditemukan!");
+      return res.status(404).json(getContent());
+    } else {
+      setContent(200, getLinkBrosur);
+      return res.status(200).json(getContent());
+    }
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
 export default {
   getAdmin,
   postAdmin,
+  ubahAdmin,
   getInformasi,
   postInformasi,
   putContentInformasi,
@@ -369,4 +496,6 @@ export default {
   detailSiswaAdmin,
   cetakDataAdmin,
   searchCetakDataAdmin,
+  postBrosur,
+  getDataBrosur,
 };

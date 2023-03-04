@@ -31,6 +31,19 @@ const uploadGaleri = multer({
   limits: { fileSize: 2000000 },
 });
 
+const uploadBrosur = multer({
+  storage: multer.diskStorage({
+    destination: "./image/brosur",
+    filename: function (req, file, cb) {
+      cb(
+        null,
+        file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+      );
+    },
+  }),
+  limits: { fileSize: 2000000 },
+});
+
 const adminRoutes = express.Router();
 
 adminRoutes
@@ -41,7 +54,8 @@ adminRoutes
 adminRoutes
   .route("/add-admin")
   //web admin
-  .post(middlewareCtrl.checkSessionAdmin, adminCtrl.postAdmin);
+  .post(middlewareCtrl.checkSessionAdmin, adminCtrl.postAdmin)
+  .put(middlewareCtrl.checkSessionAdmin, adminCtrl.ubahAdmin);
 
 adminRoutes
   .route("/informasi")
@@ -87,5 +101,16 @@ adminRoutes
   .route("/cetak-data")
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.cetakDataAdmin)
   .post(middlewareCtrl.checkSessionAdmin, adminCtrl.searchCetakDataAdmin);
+
+adminRoutes
+  .route("/brosur")
+  //di luar buat donlot brosur
+  .get(adminCtrl.getDataBrosur)
+  //di dalam login admin
+  .post(
+    middlewareCtrl.checkSessionAdmin,
+    uploadBrosur.single("brosur"),
+    adminCtrl.postBrosur
+  );
 
 export default adminRoutes;

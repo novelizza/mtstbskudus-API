@@ -18,6 +18,7 @@ const Akun = db.define(
     tempat_lahir: { type: Sequelize.STRING },
     tanggal_lahir: { type: Sequelize.DATEONLY },
     tahun_masuk: { type: Sequelize.STRING },
+    tujuan_masuk: { type: Sequelize.ENUM("MTS", "MPTS", "DAFTAR ULANG") },
     bayar: { type: Sequelize.BOOLEAN },
     nilai: { type: Sequelize.INTEGER },
     keterangan: { type: Sequelize.BOOLEAN },

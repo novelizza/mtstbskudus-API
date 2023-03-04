@@ -41,8 +41,7 @@ const authSiswa = async (req, res) => {
     const diff = sessionExpiry.diff(now) / 1000;
 
     try {
-      let resSession;
-      resSession = await sessionSiswaModel.findOrCreate({
+      let resSession = await sessionSiswaModel.findOrCreate({
         where: {
           id_akun_siswa: authUser.id_akun_siswa,
         },
@@ -123,8 +122,7 @@ const authAdmin = async (req, res) => {
     const diff = sessionExpiry.diff(now) / 1000;
 
     try {
-      let resSession;
-      resSession = await sessionAdminModel.findOrCreate({
+      let resSession = await sessionAdminModel.findOrCreate({
         where: {
           id_akun_admin: authUser.id_akun_admin,
         },
