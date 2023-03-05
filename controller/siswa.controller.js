@@ -50,7 +50,7 @@ const postSiswa = async (req, res) => {
       try {
         const newSiswa = new akunSiswaModel(req.body);
         newSiswa.password = crypto.MD5(req.body.password).toString();
-        newSiswa.avatar = req.file.path;
+        newSiswa.avatar = req.file.filename;
         newSiswa.tahun_masuk =
           moment().year() + "/" + (Number(moment().year()) + 1);
         newSiswa.bayar = 0;
@@ -110,11 +110,11 @@ const ubahAvaSiswa = async (req, res) => {
   });
 
   if (akunSiswa) {
-    console.log(akunSiswa.avatar);
     if (req.file == undefined) {
       setContent(201, "image upload failed.");
       return res.status(201).json(getContent());
     } else {
+      console.log(req.file);
       try {
         fs.unlink("./" + akunSiswa.avatar, (err) => {
           if (err) {
@@ -125,7 +125,7 @@ const ubahAvaSiswa = async (req, res) => {
 
         await akunSiswaModel.update(
           {
-            avatar: req.file.path,
+            avatar: req.file.filename,
           },
           {
             where: {

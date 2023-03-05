@@ -129,7 +129,7 @@ const postInformasi = async (req, res) => {
     try {
       const newInformasi = new informasiModel(req.body);
       newInformasi.id_akun_admin = req.sessionData.id_akun_admin;
-      newInformasi.banner = req.file.path;
+      newInformasi.banner = req.file.filename;
 
       await newInformasi.save();
       setContent(200, "Informasi Berhasil Ditambahkan");
@@ -235,7 +235,7 @@ const postGaleri = async (req, res) => {
       req.files.map(async (item) => {
         const newGaleri = new galeriModel(req.body);
         newGaleri.id_informasi = req.body.id_informasi;
-        newGaleri.foto = item.path;
+        newGaleri.foto = item.filename;
 
         await newGaleri.save();
       });
@@ -424,7 +424,7 @@ const postBrosur = async (req, res) => {
           id_brosur: 1,
         },
         defaults: {
-          link: req.file.path,
+          link: req.file.filename,
         },
       });
 
@@ -441,7 +441,7 @@ const postBrosur = async (req, res) => {
 
           await brosurModel.update(
             {
-              link: req.file.path,
+              link: req.file.filename,
             },
             {
               where: {
