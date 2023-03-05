@@ -184,7 +184,7 @@ const delInformasi = async (req, res) => {
 
     try {
       getGaleri.map(async (item) => {
-        fs.unlink("./" + item.foto, (err) => {
+        fs.unlink("./image/banner/" + item.foto, (err) => {
           if (err) {
             console.error(err);
             return;
@@ -202,7 +202,7 @@ const delInformasi = async (req, res) => {
     }
 
     try {
-      fs.unlink("./" + getInformasi.banner, (err) => {
+      fs.unlink("./image/banner/" + getInformasi.banner, (err) => {
         if (err) {
           console.error(err);
           return;
@@ -432,7 +432,7 @@ const postBrosur = async (req, res) => {
         try {
           const oldBrosur = await brosurModel.findByPk(1);
 
-          fs.unlink("./" + oldBrosur.link, (err) => {
+          fs.unlink("./image/brosur/" + oldBrosur.link, (err) => {
             if (err) {
               console.error(err);
               return;

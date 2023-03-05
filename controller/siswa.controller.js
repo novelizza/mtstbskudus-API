@@ -116,7 +116,7 @@ const ubahAvaSiswa = async (req, res) => {
     } else {
       console.log(req.file);
       try {
-        fs.unlink("./" + akunSiswa.avatar, (err) => {
+        fs.unlink("./image/siswa" + akunSiswa.avatar, (err) => {
           if (err) {
             console.error(err);
             return;
