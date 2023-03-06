@@ -83,7 +83,7 @@ const postSiswa = async (req, res) => {
       process.env.SCK
     );
 
-    const request = await axios
+    await axios
       .post(
         process.env.BASEURL_BNI,
         {
