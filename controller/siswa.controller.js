@@ -145,6 +145,8 @@ const postSiswa = async (req, res) => {
   } catch (error) {
     console.log(error);
     console.log("VA");
+    console.log(process.env.CID);
+    console.log(process.env.SCK);
     setContent(500, "Gagal membuat VA");
     return res.status(500).json(getContent());
   }
@@ -410,7 +412,6 @@ const prestasi_siswa = async (req, res) => {
       return res.status(500).json(getContent());
     }
   } else {
-    console.log(getDataPrestasi.length);
     try {
       await prestasiSiswaModel.update(req.body, {
         where: {
