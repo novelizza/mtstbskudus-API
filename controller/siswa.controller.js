@@ -3,17 +3,14 @@ import dataAlamatModel from "../model/data_alamat.model.js";
 import dataOrangTuaModel from "../model/data_orang_tua.model.js";
 import dataSiswaModel from "../model/data_siswa.model.js";
 import prestasiSiswaModel from "../model/prestasi_siswa.model.js";
-// import BniEnc from "./BniEncryption";
+
 import response from "../response/index.js";
 import crypto from "crypto-js";
 import moment from "moment";
 import fs from "fs";
 import axios from "axios";
 
-// import { createRequire } from "module";
 import BniEnc from "./BniEncryption.cjs";
-// const require = createRequire(import.meta.url);
-// let BniEnc = require("./BniEncryption.cjs");
 
 const { setContent, getContent } = response;
 
@@ -68,39 +65,43 @@ const getSiswa = async (req, res) => {
 
 const postSiswa = async (req, res) => {
   try {
+    const CID = process.env.CID.toString();
+    const SCK = process.env.SCK.toString();
+    const PRX = process.env.PRX.toString();
+    const URL = process.env.BASEURL_BNI.toString();
+
     const dataReqVA = {
       type: "createbilling",
-      client_id: process.env.CID,
+      client_id: CID,
       trx_id: "invoice-" + req.body.nama_lengkap + req.body.nisn, // this should be unique
       trx_amount: 200000,
       billing_type: "c",
       customer_name: req.body.nama_lengkap,
     };
 
-    const ecrypt_string = BniEnc.encrypt(
-      dataReqVA,
-      process.env.CID,
-      process.env.SCK
-    );
-    console.log("disini");
+    console.log(dataReqVA);
+
+    const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
+
     await axios
       .post(
-        process.env.BASEURL_BNI,
-        {
-          clien_id: process.env.CID,
-          prefix: process.env.PRX,
+        URL,
+        JSON.stringify({
+          client_id: CID,
+          prefix: PRX,
           data: ecrypt_string,
-        },
+        }),
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       )
-      .then(async (res) => {
+      .then(async (result) => {
         console.log("ini res dari BNI");
-        console.log(res.data);
-        const parsed_string = BniEnc.decrypt(res.data.data, cid, sck);
+        console.log(result.data);
+
+        const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
         const akunSiswa = await akunSiswaModel.findOne({
           where: {
@@ -143,10 +144,6 @@ const postSiswa = async (req, res) => {
         return res.status(500).json(getContent());
       });
   } catch (error) {
-    console.log(error);
-    console.log("VA");
-    console.log(process.env.CID);
-    console.log(process.env.SCK);
     setContent(500, "Gagal membuat VA");
     return res.status(500).json(getContent());
   }
