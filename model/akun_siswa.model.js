@@ -22,6 +22,7 @@ const Akun = db.define(
     bayar: { type: Sequelize.BOOLEAN },
     nilai: { type: Sequelize.INTEGER },
     keterangan: { type: Sequelize.BOOLEAN },
+    va: { type: Sequelize.STRING },
   },
   {
     freezeTableName: true,

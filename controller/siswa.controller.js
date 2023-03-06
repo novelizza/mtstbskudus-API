@@ -3,15 +3,46 @@ import dataAlamatModel from "../model/data_alamat.model.js";
 import dataOrangTuaModel from "../model/data_orang_tua.model.js";
 import dataSiswaModel from "../model/data_siswa.model.js";
 import prestasiSiswaModel from "../model/prestasi_siswa.model.js";
-
+// import BniEnc from "./BniEncryption";
 import response from "../response/index.js";
 import crypto from "crypto-js";
 import moment from "moment";
 import fs from "fs";
+import axios from "axios";
+
+// import { createRequire } from "module";
+import BniEnc from "./BniEncryption.cjs";
+// const require = createRequire(import.meta.url);
+// let BniEnc = require("./BniEncryption.cjs");
 
 const { setContent, getContent } = response;
 
 const getSiswa = async (req, res) => {
+  // const cid = process.env.CID;
+  // const sck = process.env.SCK;
+  // const two_hours = new Date(+new Date() + 2 * 3600 * 1000);
+
+  // const test_data = {
+  //   type: "createbilling",
+  //   trx_amount: 100000,
+  //   customer_name: "David",
+  //   customer_email: "david@example.com",
+  //   customer_phone: "08123456781011",
+  //   description: "Test Create Billing",
+  //   trx_id: "invoice-0001", // this should be unique
+  //   virtual_account: null,
+  //   billing_type: "c",
+  //   client_id: cid,
+  //   datetime_expired: two_hours.toISOString(),
+  // };
+
+  // const ecrypt_string = BniEnc.encrypt(test_data, cid, sck);
+  // const parsed_string = BniEnc.decrypt(ecrypt_string, cid, sck);
+
+  // console.log("hasil encrypt : " + ecrypt_string);
+  // console.log("hasil decrypt : ");
+  // console.log(parsed_string);
+
   try {
     let getSiswa = await akunSiswaModel.findByPk(
       req.sessionData.id_akun_siswa,
@@ -36,35 +67,78 @@ const getSiswa = async (req, res) => {
 };
 
 const postSiswa = async (req, res) => {
-  const akunSiswa = await akunSiswaModel.findOne({
-    where: {
-      username: req.body.username,
-    },
-  });
+  try {
+    const dataReqVA = {
+      type: "createbilling",
+      client_id: process.env.CID,
+      trx_id: "invoice-" + req.data.nama_lengkap + req.data.nisn, // this should be unique
+      trx_amount: 200000,
+      billing_type: "c",
+      customer_name: req.body.nama_lengkap,
+    };
 
-  if (!akunSiswa) {
-    if (req.file == undefined) {
-      setContent(201, "image upload failed.");
-      return res.status(201).json(getContent());
-    } else {
-      try {
-        const newSiswa = new akunSiswaModel(req.body);
-        newSiswa.password = crypto.MD5(req.body.password).toString();
-        newSiswa.avatar = req.file.filename;
-        newSiswa.tahun_masuk =
-          moment().year() + "/" + (Number(moment().year()) + 1);
-        newSiswa.bayar = 0;
+    const ecrypt_string = BniEnc.encrypt(
+      dataReqVA,
+      process.env.CID,
+      process.env.SCK
+    );
 
-        await newSiswa.save();
-        setContent(200, "Siswa Berhasil Ditambahkan");
-        return res.status(200).json(getContent());
-      } catch (error) {
-        setContent(500, error);
-        return res.status(500).json(getContent());
-      }
-    }
-  } else {
-    setContent(500, "Username Telah Terdaftar");
+    const request = await axios
+      .post(
+        process.env.BASEURL_BNI,
+        {
+          clien_id: process.env.CID,
+          prefix: process.env.PRX,
+          data: ecrypt_string,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(async (res) => {
+        const parsed_string = BniEnc.decrypt(res.data, cid, sck);
+
+        const akunSiswa = await akunSiswaModel.findOne({
+          where: {
+            username: req.body.username,
+          },
+        });
+
+        if (!akunSiswa) {
+          if (req.file == undefined) {
+            setContent(201, "image upload failed.");
+            return res.status(201).json(getContent());
+          } else {
+            try {
+              const newSiswa = new akunSiswaModel(req.body);
+              newSiswa.password = crypto.MD5(req.body.password).toString();
+              newSiswa.avatar = req.file.filename;
+              newSiswa.tahun_masuk =
+                moment().year() + "/" + (Number(moment().year()) + 1);
+              newSiswa.bayar = 0;
+              newSiswa.va = parsed_string.virtual_account;
+              newSiswa.trx_id = parsed_string.trx_id;
+
+              await newSiswa.save();
+              setContent(200, "Siswa Berhasil Ditambahkan");
+              return res.status(200).json(getContent());
+            } catch (error) {
+              setContent(500, error);
+              return res.status(500).json(getContent());
+            }
+          }
+        } else {
+          setContent(500, "Username Telah Terdaftar");
+          return res.status(500).json(getContent());
+        }
+      })
+      .catch((er) => {
+        console.log(er.response);
+      });
+  } catch (error) {
+    setContent(500, "Gagal membuat VA");
     return res.status(500).json(getContent());
   }
 };
@@ -114,7 +188,6 @@ const ubahAvaSiswa = async (req, res) => {
       setContent(201, "image upload failed.");
       return res.status(201).json(getContent());
     } else {
-      console.log(req.file);
       try {
         fs.unlink("./image/siswa" + akunSiswa.avatar, (err) => {
           if (err) {
