@@ -98,6 +98,8 @@ const postSiswa = async (req, res) => {
         }
       )
       .then(async (res) => {
+        console.log("ini res dari BNI");
+        console.log(res.data);
         const parsed_string = BniEnc.decrypt(res.data, cid, sck);
 
         const akunSiswa = await akunSiswaModel.findOne({
