@@ -137,7 +137,9 @@ const postSiswa = async (req, res) => {
         }
       })
       .catch((er) => {
-        console.log(er.response);
+        console.log(er);
+        setContent(500, "AXIOS GAGAL");
+        return res.status(500).json(getContent());
       });
   } catch (error) {
     console.log(error.response);
