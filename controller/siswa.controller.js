@@ -82,7 +82,7 @@ const postSiswa = async (req, res) => {
       process.env.CID,
       process.env.SCK
     );
-
+    console.log("disini");
     await axios
       .post(
         process.env.BASEURL_BNI,
@@ -140,6 +140,7 @@ const postSiswa = async (req, res) => {
         console.log(er.response);
       });
   } catch (error) {
+    console.log(error.response);
     setContent(500, "Gagal membuat VA");
     return res.status(500).json(getContent());
   }
