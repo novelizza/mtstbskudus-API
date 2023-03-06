@@ -73,7 +73,7 @@ const postSiswa = async (req, res) => {
     const dataReqVA = {
       type: "createbilling",
       client_id: CID,
-      trx_id: "invoice-" + req.body.nama_lengkap + req.body.nisn, // this should be unique
+      trx_id: "invoice-" + req.body.nisn, // this should be unique
       trx_amount: "200000",
       billing_type: "c",
       customer_name: req.body.nama_lengkap,
