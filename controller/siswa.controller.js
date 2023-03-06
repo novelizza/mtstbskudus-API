@@ -138,11 +138,13 @@ const postSiswa = async (req, res) => {
       })
       .catch((er) => {
         console.log(er);
+        console.log("axios");
         setContent(500, "AXIOS GAGAL");
         return res.status(500).json(getContent());
       });
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
+    console.log("VA");
     setContent(500, "Gagal membuat VA");
     return res.status(500).json(getContent());
   }
