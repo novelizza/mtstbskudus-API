@@ -34,6 +34,8 @@ const getSiswa = async (req, res) => {
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
+      console.log(getSiswa);
+
       const dataInquiry = {
         type: "inquirybilling",
         client_id: CID,
