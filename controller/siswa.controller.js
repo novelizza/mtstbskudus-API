@@ -16,6 +16,11 @@ const { setContent, getContent } = response;
 
 const getSiswa = async (req, res) => {
   try {
+    const CID = process.env.CID.toString();
+    const SCK = process.env.SCK.toString();
+    const PRX = process.env.PRX.toString();
+    const URL = process.env.BASEURL_BNI.toString();
+
     let getSiswa = await akunSiswaModel.findByPk(
       req.sessionData.id_akun_siswa,
       {
@@ -29,14 +34,9 @@ const getSiswa = async (req, res) => {
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
-      const CID = process.env.CID.toString();
-      const SCK = process.env.SCK.toString();
-      const PRX = process.env.PRX.toString();
-      const URL = process.env.BASEURL_BNI.toString();
-
       const dataInquiry = {
         type: "inquirybilling",
-        trx_amount: CID,
+        client_id: CID,
         trx_id: getSiswa.trx_id,
       };
 
@@ -56,20 +56,19 @@ const getSiswa = async (req, res) => {
             },
           }
         )
-        .then(async (result) => {
-          console.log("ini res dari BNI");
-          console.log(result.data);
-
-          const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+        .then((resultBNI) => {
+          const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
           getSiswa.va = parsed_string.data.virtual_account;
           getSiswa.vaStatus = parsed_string.data.va_status;
+
           setContent(200, getSiswa);
           return res.status(200).json(getContent());
         })
         .catch((er) => {
+          console.log("axios-------------------");
           console.log(er);
-          console.log("axios");
+          console.log("axios-------------------");
           setContent(500, "AXIOS GAGAL");
           return res.status(500).json(getContent());
         });
@@ -95,8 +94,6 @@ const postSiswa = async (req, res) => {
     client_id: CID,
   };
 
-  console.log(dataReqVA);
-
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
   await axios
@@ -114,13 +111,7 @@ const postSiswa = async (req, res) => {
       }
     )
     .then(async (result) => {
-      console.log("ini res dari BNI");
-      console.log(result.data);
-
       const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
-
-      console.log("ini decrypt dari BNI");
-      console.log(parsed_string);
 
       const akunSiswa = await akunSiswaModel.findOne({
         where: {
@@ -144,7 +135,7 @@ const postSiswa = async (req, res) => {
             newSiswa.trx_id = parsed_string.trx_id;
 
             await newSiswa.save();
-            console.log("berhasil disimpan");
+
             setContent(200, "Siswa Berhasil Ditambahkan");
             return res.status(200).json(getContent());
           } catch (error) {
@@ -158,9 +149,7 @@ const postSiswa = async (req, res) => {
       }
     })
     .catch((er) => {
-      console.log(er);
-      console.log("axios");
-      setContent(500, "AXIOS GAGAL");
+      setContent(500, "BNI VA ERROR");
       return res.status(500).json(getContent());
     });
 };
