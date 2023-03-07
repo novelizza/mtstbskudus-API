@@ -66,12 +66,17 @@ const getSiswa = async (req, res) => {
           console.log(getSiswa);
           console.log("-------------------------");
 
-          const new_data = {
-            ...getSiswa,
-            vaStatus: "lalalalalal",
+          const test = {
+            data_siswa: new_data,
+            statusVa: parsed_string.va_status,
           };
 
-          setContent(200, new_data);
+          console.log(test);
+
+          setContent(200, {
+            data_siswa: new_data,
+            statusVa: parsed_string.va_status,
+          });
           return res.status(200).json(getContent());
         })
         .catch((er) => {
