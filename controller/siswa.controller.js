@@ -61,22 +61,6 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          // getSiswa.va = parsed_string.virtual_account;
-          // getSiswa.vaStatus = parsed_string.va_status;
-
-          // console.log("-------------------------");
-          // console.log(getSiswa);
-          // console.log("-------------------------");
-
-          const test = {
-            data_siswa: getSiswa,
-            statusVa: parsed_string.va_status,
-          };
-
-          console.log("-------------------------");
-          console.log(test);
-          console.log("-------------------------");
-
           setContent(200, {
             data_siswa: getSiswa,
             statusVa: parsed_string.va_status,
