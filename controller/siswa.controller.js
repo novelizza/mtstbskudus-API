@@ -31,6 +31,7 @@ const getSiswa = async (req, res) => {
     );
 
     if (!getSiswa) {
+      console.log(getSiswa);
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
