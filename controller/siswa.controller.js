@@ -66,7 +66,10 @@ const getSiswa = async (req, res) => {
           console.log(getSiswa);
           console.log("-------------------------");
 
-          setContent(200, getSiswa);
+          setContent(200, {
+            ...getSiswa,
+            vaStatus = parsed_string.va_status
+          });
           return res.status(200).json(getContent());
         })
         .catch((er) => {
