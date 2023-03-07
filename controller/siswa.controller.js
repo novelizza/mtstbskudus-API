@@ -144,6 +144,7 @@ const postSiswa = async (req, res) => {
             newSiswa.trx_id = parsed_string.trx_id;
 
             await newSiswa.save();
+            console.log("berhasil disimpan");
             setContent(200, "Siswa Berhasil Ditambahkan");
             return res.status(200).json(getContent());
           } catch (error) {
