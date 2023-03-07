@@ -68,10 +68,10 @@ const getSiswa = async (req, res) => {
 
           const new_data = {
             ...getSiswa,
-            vaStatus = parsed_string.va_status
-          }
+            vaStatus: parsed_string.va_status,
+          };
 
-          setContent(200, new_data);
+          setContent(200, { new_data });
           return res.status(200).json(getContent());
         })
         .catch((er) => {
