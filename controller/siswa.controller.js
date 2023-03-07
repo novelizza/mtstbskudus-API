@@ -69,7 +69,7 @@ const getSiswa = async (req, res) => {
           // console.log("-------------------------");
 
           const test = {
-            data_siswa: new_data,
+            data_siswa: getSiswa,
             statusVa: parsed_string.va_status,
           };
 
@@ -78,7 +78,7 @@ const getSiswa = async (req, res) => {
           console.log("-------------------------");
 
           setContent(200, {
-            data_siswa: new_data,
+            data_siswa: getSiswa,
             statusVa: parsed_string.va_status,
           });
           return res.status(200).json(getContent());
