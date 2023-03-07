@@ -42,8 +42,6 @@ const getSiswa = async (req, res) => {
 
       const ecrypt_string = BniEnc.encrypt(dataInquiry, CID, SCK);
 
-      console.log(getSiswa);
-
       await axios
         .post(
           URL,
