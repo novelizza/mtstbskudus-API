@@ -62,6 +62,8 @@ const getSiswa = async (req, res) => {
           getSiswa.va = parsed_string.data.virtual_account;
           getSiswa.vaStatus = parsed_string.data.va_status;
 
+          console.log(getSiswa);
+
           setContent(200, getSiswa);
           return res.status(200).json(getContent());
         })
