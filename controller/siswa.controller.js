@@ -31,12 +31,9 @@ const getSiswa = async (req, res) => {
     );
 
     if (!getSiswa) {
-      console.log(getSiswa);
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
-      console.log(getSiswa);
-
       const dataInquiry = {
         type: "inquirybilling",
         client_id: CID,
@@ -61,6 +58,12 @@ const getSiswa = async (req, res) => {
         )
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
+
+          console.log("res dari bni");
+          console.log(resultBNI);
+
+          console.log("rdecrypt dari bni");
+          console.log(parsed_string);
 
           getSiswa.va = parsed_string.data.virtual_account;
           getSiswa.vaStatus = parsed_string.data.va_status;
