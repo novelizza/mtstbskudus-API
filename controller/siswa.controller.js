@@ -71,11 +71,13 @@ const getSiswa = async (req, res) => {
           return res.status(200).json(getContent());
         })
         .catch((er) => {
+          console.log("BNI ERROR");
           setContent(500, "BNI VA ERROR");
           return res.status(500).json(getContent());
         });
     }
   } catch (error) {
+    console.log("AWAL ERROR");
     setContent(500, error);
     return res.status(500).json(getContent());
   }
