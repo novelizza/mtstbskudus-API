@@ -21,7 +21,7 @@ const getSiswa = async (req, res) => {
     const PRX = process.env.PRX.toString();
     const URL = process.env.BASEURL_BNI.toString();
 
-    let getSiswa = await akunSiswaModel.findByPk(
+    const getSiswa = await akunSiswaModel.findByPk(
       req.sessionData.id_akun_siswa,
       {
         attributes: {
@@ -59,11 +59,6 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          console.log({
-            data_siswa: getSiswa,
-            statusVa: parsed_string.va_status,
-          });
-
           setContent(200, {
             data_siswa: getSiswa,
             statusVa: parsed_string.va_status,
@@ -71,13 +66,11 @@ const getSiswa = async (req, res) => {
           return res.status(200).json(getContent());
         })
         .catch((er) => {
-          console.log("BNI ERROR");
           setContent(500, "BNI VA ERROR");
           return res.status(500).json(getContent());
         });
     }
   } catch (error) {
-    console.log("AWAL ERROR");
     setContent(500, error);
     return res.status(500).json(getContent());
   }
