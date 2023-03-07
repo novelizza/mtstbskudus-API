@@ -23,6 +23,7 @@ const Akun = db.define(
     nilai: { type: Sequelize.INTEGER },
     keterangan: { type: Sequelize.BOOLEAN },
     va: { type: Sequelize.STRING },
+    trx_id: { type: Sequelize.STRING },
   },
   {
     freezeTableName: true,

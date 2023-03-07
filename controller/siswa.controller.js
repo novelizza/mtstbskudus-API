@@ -15,31 +15,6 @@ import BniEnc from "./BniEncryption.cjs";
 const { setContent, getContent } = response;
 
 const getSiswa = async (req, res) => {
-  // const cid = process.env.CID;
-  // const sck = process.env.SCK;
-  // const two_hours = new Date(+new Date() + 2 * 3600 * 1000);
-
-  // const test_data = {
-  //   type: "createbilling",
-  //   trx_amount: 100000,
-  //   customer_name: "David",
-  //   customer_email: "david@example.com",
-  //   customer_phone: "08123456781011",
-  //   description: "Test Create Billing",
-  //   trx_id: "invoice-0001", // this should be unique
-  //   virtual_account: null,
-  //   billing_type: "c",
-  //   client_id: cid,
-  //   datetime_expired: two_hours.toISOString(),
-  // };
-
-  // const ecrypt_string = BniEnc.encrypt(test_data, cid, sck);
-  // const parsed_string = BniEnc.decrypt(ecrypt_string, cid, sck);
-
-  // console.log("hasil encrypt : " + ecrypt_string);
-  // console.log("hasil decrypt : ");
-  // console.log(parsed_string);
-
   try {
     let getSiswa = await akunSiswaModel.findByPk(
       req.sessionData.id_akun_siswa,
@@ -54,8 +29,50 @@ const getSiswa = async (req, res) => {
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
-      setContent(200, getSiswa);
-      return res.status(200).json(getContent());
+      const CID = process.env.CID.toString();
+      const SCK = process.env.SCK.toString();
+      const PRX = process.env.PRX.toString();
+      const URL = process.env.BASEURL_BNI.toString();
+
+      const dataInquiry = {
+        type: "inquirybilling",
+        trx_amount: CID,
+        trx_id: getSiswa.trx_id,
+      };
+
+      const ecrypt_string = BniEnc.encrypt(dataInquiry, CID, SCK);
+
+      await axios
+        .post(
+          URL,
+          JSON.stringify({
+            client_id: CID,
+            prefix: PRX,
+            data: ecrypt_string,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(async (result) => {
+          console.log("ini res dari BNI");
+          console.log(result.data);
+
+          const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+
+          getSiswa.va = parsed_string.data.virtual_account;
+          getSiswa.vaStatus = parsed_string.data.va_status;
+          setContent(200, getSiswa);
+          return res.status(200).json(getContent());
+        })
+        .catch((er) => {
+          console.log(er);
+          console.log("axios");
+          setContent(500, "AXIOS GAGAL");
+          return res.status(500).json(getContent());
+        });
     }
   } catch (error) {
     setContent(500, error);
@@ -64,89 +81,87 @@ const getSiswa = async (req, res) => {
 };
 
 const postSiswa = async (req, res) => {
-  try {
-    const CID = process.env.CID.toString();
-    const SCK = process.env.SCK.toString();
-    const PRX = process.env.PRX.toString();
-    const URL = process.env.BASEURL_BNI.toString();
+  const CID = process.env.CID.toString();
+  const SCK = process.env.SCK.toString();
+  const PRX = process.env.PRX.toString();
+  const URL = process.env.BASEURL_BNI.toString();
 
-    const dataReqVA = {
-      type: "createbilling",
-      trx_amount: "200000",
-      customer_name: req.body.nama_lengkap,
-      trx_id: "invoice-" + req.body.nisn, // this should be unique
-      billing_type: "c",
-      client_id: CID,
-    };
+  const dataReqVA = {
+    type: "createbilling",
+    trx_amount: "200000",
+    customer_name: req.body.nama_lengkap,
+    trx_id: "invoice-" + req.body.nisn, // this should be unique
+    billing_type: "c",
+    client_id: CID,
+  };
 
-    console.log(dataReqVA);
+  console.log(dataReqVA);
 
-    const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
+  const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
-    await axios
-      .post(
-        URL,
-        JSON.stringify({
-          client_id: CID,
-          prefix: PRX,
-          data: ecrypt_string,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(async (result) => {
-        console.log("ini res dari BNI");
-        console.log(result.data);
+  await axios
+    .post(
+      URL,
+      JSON.stringify({
+        client_id: CID,
+        prefix: PRX,
+        data: ecrypt_string,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(async (result) => {
+      console.log("ini res dari BNI");
+      console.log(result.data);
 
-        const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
-        const akunSiswa = await akunSiswaModel.findOne({
-          where: {
-            username: req.body.username,
-          },
-        });
+      console.log("ini decrypt dari BNI");
+      console.log(parsed_string);
 
-        if (!akunSiswa) {
-          if (req.file == undefined) {
-            setContent(201, "image upload failed.");
-            return res.status(201).json(getContent());
-          } else {
-            try {
-              const newSiswa = new akunSiswaModel(req.body);
-              newSiswa.password = crypto.MD5(req.body.password).toString();
-              newSiswa.avatar = req.file.filename;
-              newSiswa.tahun_masuk =
-                moment().year() + "/" + (Number(moment().year()) + 1);
-              newSiswa.bayar = 0;
-              newSiswa.va = parsed_string.virtual_account;
-              newSiswa.trx_id = parsed_string.trx_id;
-
-              await newSiswa.save();
-              setContent(200, "Siswa Berhasil Ditambahkan");
-              return res.status(200).json(getContent());
-            } catch (error) {
-              setContent(500, error);
-              return res.status(500).json(getContent());
-            }
-          }
-        } else {
-          setContent(500, "Username Telah Terdaftar");
-          return res.status(500).json(getContent());
-        }
-      })
-      .catch((er) => {
-        console.log(er);
-        console.log("axios");
-        setContent(500, "AXIOS GAGAL");
-        return res.status(500).json(getContent());
+      const akunSiswa = await akunSiswaModel.findOne({
+        where: {
+          username: req.body.username,
+        },
       });
-  } catch (error) {
-    setContent(500, "Gagal membuat VA");
-    return res.status(500).json(getContent());
-  }
+
+      if (!akunSiswa) {
+        if (req.file == undefined) {
+          setContent(201, "image upload failed.");
+          return res.status(201).json(getContent());
+        } else {
+          try {
+            const newSiswa = new akunSiswaModel(req.body);
+            newSiswa.password = crypto.MD5(req.body.password).toString();
+            newSiswa.avatar = req.file.filename;
+            newSiswa.tahun_masuk =
+              moment().year() + "/" + (Number(moment().year()) + 1);
+            newSiswa.bayar = 0;
+            newSiswa.va = parsed_string.virtual_account;
+            newSiswa.trx_id = parsed_string.trx_id;
+
+            await newSiswa.save();
+            setContent(200, "Siswa Berhasil Ditambahkan");
+            return res.status(200).json(getContent());
+          } catch (error) {
+            setContent(500, error);
+            return res.status(500).json(getContent());
+          }
+        }
+      } else {
+        setContent(500, "Username Telah Terdaftar");
+        return res.status(500).json(getContent());
+      }
+    })
+    .catch((er) => {
+      console.log(er);
+      console.log("axios");
+      setContent(500, "AXIOS GAGAL");
+      return res.status(500).json(getContent());
+    });
 };
 
 const ubahSiswa = async (req, res) => {
