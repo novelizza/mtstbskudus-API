@@ -59,22 +59,18 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          console.log("decrypt dari bni");
-          console.log(parsed_string);
-
           getSiswa.va = parsed_string.virtual_account;
           getSiswa.vaStatus = parsed_string.va_status;
 
+          console.log("-------------------------");
           console.log(getSiswa);
+          console.log("-------------------------");
 
           setContent(200, getSiswa);
           return res.status(200).json(getContent());
         })
         .catch((er) => {
-          console.log("axios-------------------");
-          console.log(er);
-          console.log("axios-------------------");
-          setContent(500, "AXIOS GAGAL");
+          setContent(500, "BNI VA ERROR");
           return res.status(500).json(getContent());
         });
     }
