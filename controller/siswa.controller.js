@@ -83,11 +83,11 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    trx_amount: "200000",
+    trx_amount: "250000",
     datetime_expired: "2023-03-08T16:00:00+07:00",
     description: "Payment testing",
     trx_id: "invoice-828282",
-    type: "updatebilling",
+    type: "updateBilling",
     customer_email: "fafa@gmail.com",
     customer_phone: "082235451766",
     customer_name: req.body.nama_lengkap,
