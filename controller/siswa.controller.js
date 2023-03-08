@@ -147,9 +147,7 @@ const postSiswa = async (req, res) => {
     })
     .catch((er) => {
       console.log("------------------------");
-      console.log(er.response);
-      console.log(er);
-      console.log(er.request);
+      console.log(er.response.data);
       console.log("------------------------");
       setContent(500, "BNI VA ERROR");
       return res.status(500).json(getContent());
