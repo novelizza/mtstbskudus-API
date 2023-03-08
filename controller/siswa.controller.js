@@ -89,6 +89,12 @@ const postSiswa = async (req, res) => {
     trx_id: "invoice-" + req.body.nisn, // this should be unique
     billing_type: "c",
     client_id: CID,
+
+    customer_email: "fafa@gmail.com",
+    customer_phone: "082235451766",
+    virtual_account: "140120232338",
+    datetime_expired: new Date(),
+    description: "Payment testing",
   };
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
