@@ -86,13 +86,12 @@ const postSiswa = async (req, res) => {
     type: "createbilling",
     trx_amount: "200000",
     customer_name: req.body.nama_lengkap,
-    trx_id: "invoice-" + req.body.nisn, // this should be unique
+    trx_id: "invoice-" + req.body.nisn,
     billing_type: "c",
     client_id: CID,
-
     customer_email: "fafa@gmail.com",
     customer_phone: "082235451766",
-    virtual_account: "140120232338",
+    virtual_account: "8001000000000001",
     datetime_expired: "2023-03-08T16:00:00+07:00",
     description: "Payment testing",
   };
