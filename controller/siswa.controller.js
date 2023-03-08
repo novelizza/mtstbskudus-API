@@ -88,10 +88,15 @@ const postSiswa = async (req, res) => {
     description: "Payment testing",
     trx_id: "invoice-828282",
     type: "updatebilling",
-    client_id: CID,
+    client_id: "92022",
     customer_email: "fafa_baru@gmail.com",
     customer_phone: "6282235451766",
     customer_name: "Coba Siswa5",
+  };
+
+  const popo = {
+    status: "000",
+    data: "Rx0cSCYYHyMaHBZlPAlaDHICSAchNFJTYFB9AHhFGkRRFR9EDBkIX05ZY154AkN8dXlUVlwFCCAIIUtSRUwZRkcWFkkcGh8VHQhp",
   };
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
