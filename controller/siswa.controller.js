@@ -82,21 +82,22 @@ const postSiswa = async (req, res) => {
   const PRX = process.env.PRX.toString();
   const URL = process.env.BASEURL_BNI.toString();
 
+  // trx_amount: "250000",
+  // datetime_expired: "2023-03-10T00:00:00+07:00",
+  // description: "Payment testing",
+  // trx_id: "invoice-828282",
+  // type: "updatebilling",
+  // client_id: "18051",
+  // customer_email: "fafa_baru@gmail.com",
+  // customer_phone: "6282235451766",
+  // customer_name: "Coba Siswa5",
   const dataReqVA = {
-    trx_amount: "250000",
-    datetime_expired: "2023-03-10T00:00:00+07:00",
-    description: "Payment testing",
-    trx_id: "invoice-828282",
-    type: "updatebilling",
+    type: "createbilling",
     client_id: "18051",
-    customer_email: "fafa_baru@gmail.com",
-    customer_phone: "6282235451766",
-    customer_name: "Coba Siswa5",
-  };
-
-  const popo = {
-    status: "000",
-    data: "Rx0cSCYYHyMaHBZlPAlaDHICSAchNFJTYFB9AHhFGkRRFR9EDBkIX05ZY154AkN8dXlUVlwFCCAIIUtSRUwZRkcWFkkcGh8VHQhp",
+    trx_id: "invoice-fafa2510",
+    trx_amount: "200000",
+    billing_type: "c",
+    customer_name: "Fafaaaaa",
   };
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
