@@ -77,8 +77,7 @@ const getSiswa = async (req, res) => {
 };
 
 const postSiswa = async (req, res) => {
-  // const CID = process.env.CID.toString();
-  const CID = "18051";
+  const CID = process.env.CID.toString();
   const SCK = process.env.SCK.toString();
   const PRX = process.env.PRX.toString();
   const URL = process.env.BASEURL_BNI.toString();
@@ -109,6 +108,7 @@ const postSiswa = async (req, res) => {
       }
     )
     .then(async (result) => {
+      console.log(result.data);
       const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
       const akunSiswa = await akunSiswaModel.findOne({
