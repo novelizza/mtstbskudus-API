@@ -83,17 +83,14 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    type: "createbilling",
     trx_amount: "200000",
-    customer_name: req.body.nama_lengkap,
-    trx_id: "invoice-" + req.body.nisn,
-    billing_type: "c",
-    client_id: CID,
-    customer_email: "fafa@gmail.com",
-    customer_phone: "082235451766",
-    virtual_account: PRX + CID + "00000001",
     datetime_expired: "2023-03-08T16:00:00+07:00",
     description: "Payment testing",
+    trx_id: "invoice-828282",
+    type: "updatebilling",
+    customer_email: "fafa@gmail.com",
+    customer_phone: "082235451766",
+    customer_name: req.body.nama_lengkap,
   };
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
