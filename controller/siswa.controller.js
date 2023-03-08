@@ -88,7 +88,7 @@ const postSiswa = async (req, res) => {
     description: "Payment testing",
     trx_id: "invoice-828282",
     type: "updatebilling",
-    client_id: "92022",
+    client_id: "18051",
     customer_email: "fafa_baru@gmail.com",
     customer_phone: "6282235451766",
     customer_name: "Coba Siswa5",
