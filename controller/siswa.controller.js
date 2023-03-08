@@ -83,23 +83,13 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
+    type: "createbilling",
+    client_id: CID,
+    trx_id: "invoice-" + req.body.nisn,
     trx_amount: "200000",
-    datetime_expired: "2023-03-10T00:00:00+07:00",
-    description: "Payment testing",
-    trx_id: "invoice-fafa25109999",
-    type: "updatebilling",
-    client_id: "18052",
-    customer_email: "fafa_baru@gmail.com",
-    customer_phone: "6282235451766",
-    customer_name: "ACFA",
-    virtual_account: "9881805123030814",
+    billing_type: "c",
+    customer_name: req.body.nama_lengkap,
   };
-  // type: "createbilling",
-  // client_id: "18051",
-  // trx_id: "invoice-fafa25109999",
-  // trx_amount: "200000",
-  // billing_type: "c",
-  // customer_name: "Fafaaaaa",
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
@@ -120,45 +110,42 @@ const postSiswa = async (req, res) => {
     .then(async (result) => {
       console.log(result.data);
 
-      setContent(200, result.data);
-      return res.status(200).json(getContent());
+      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
-      // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      const akunSiswa = await akunSiswaModel.findOne({
+        where: {
+          username: req.body.username,
+        },
+      });
 
-      // const akunSiswa = await akunSiswaModel.findOne({
-      //   where: {
-      //     username: req.body.username,
-      //   },
-      // });
+      if (!akunSiswa) {
+        if (req.file == undefined) {
+          setContent(201, "image upload failed.");
+          return res.status(201).json(getContent());
+        } else {
+          try {
+            const newSiswa = new akunSiswaModel(req.body);
+            newSiswa.password = crypto.MD5(req.body.password).toString();
+            newSiswa.avatar = req.file.filename;
+            newSiswa.tahun_masuk =
+              moment().year() + "/" + (Number(moment().year()) + 1);
+            newSiswa.bayar = 0;
+            newSiswa.va = parsed_string.virtual_account;
+            newSiswa.trx_id = parsed_string.trx_id;
 
-      // if (!akunSiswa) {
-      //   if (req.file == undefined) {
-      //     setContent(201, "image upload failed.");
-      //     return res.status(201).json(getContent());
-      //   } else {
-      //     try {
-      //       const newSiswa = new akunSiswaModel(req.body);
-      //       newSiswa.password = crypto.MD5(req.body.password).toString();
-      //       newSiswa.avatar = req.file.filename;
-      //       newSiswa.tahun_masuk =
-      //         moment().year() + "/" + (Number(moment().year()) + 1);
-      //       newSiswa.bayar = 0;
-      //       newSiswa.va = parsed_string.virtual_account;
-      //       newSiswa.trx_id = parsed_string.trx_id;
+            await newSiswa.save();
 
-      //       await newSiswa.save();
-
-      //       setContent(200, "Siswa Berhasil Ditambahkan");
-      //       return res.status(200).json(getContent());
-      //     } catch (error) {
-      //       setContent(500, error);
-      //       return res.status(500).json(getContent());
-      //     }
-      //   }
-      // } else {
-      //   setContent(500, "Username Telah Terdaftar");
-      //   return res.status(500).json(getContent());
-      // }
+            setContent(200, "Siswa Berhasil Ditambahkan");
+            return res.status(200).json(getContent());
+          } catch (error) {
+            setContent(500, error);
+            return res.status(500).json(getContent());
+          }
+        }
+      } else {
+        setContent(500, "Username Telah Terdaftar");
+        return res.status(500).json(getContent());
+      }
     })
     .catch((er) => {
       console.log("------------------------");
