@@ -93,7 +93,7 @@ const postSiswa = async (req, res) => {
     customer_email: "fafa@gmail.com",
     customer_phone: "082235451766",
     virtual_account: "140120232338",
-    datetime_expired: new Date(),
+    datetime_expired: "2023-03-08T16:00:00+07:00",
     description: "Payment testing",
   };
 
