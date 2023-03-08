@@ -82,7 +82,7 @@ const postSiswa = async (req, res) => {
   const PRX = process.env.PRX.toString();
   const URL = process.env.BASEURL_BNI.toString();
 
-  const simpan = {
+  const dataReqVA = {
     trx_amount: "250000",
     datetime_expired: "2023-03-10T00:00:00+07:00",
     description: "Payment testing",
@@ -90,15 +90,13 @@ const postSiswa = async (req, res) => {
     type: "updateBilling",
     customer_email: "fafa_baru@gmail.com",
     customer_phone: "6282235451766",
-    customer_name: req.body.nama_lengkap,
+    customer_name: "Coba Siswa5",
   };
 
-  const dataReqVA = {
-    type: "inquirybilling",
-    client_id: CID,
-    trx_id: "invoice-828282",
+  const lala = {
+    status: "000",
+    data: "SxseRyYYHyMaHBZlPAlaDHICSAchNFJTYFB9AHhFGkRRFR9EDBkITFFQVFcLdU1_NFAHEiZBGxcIFDUQfQZdBndQQnpMTVZaWloOJDVWG1BEShwVHEQVHRgVTEZMNRI0Bl1adUtTXVlXWworNEwUREpBGQMTO0RfWVUKAn0GQQdyVUg0KwcuVEdPB0F8CWJ0TDQRCkkLVVpcTX0IcwBOd3tQDEsQCBMOR2BbXgkCTQZyCUxUVXcLHwwDQD93eVZ3DUxUd0lQWE5GW1RNOVAGTUJIGA4eRBMWHghEUk5HIEtIHAVFC05IWVFaVVd4fEgQA3teRU80HA8XFUZJSEMZP0MbAkciICEbIxoYEz48SHUOdl1KVH5AWkdaCHoGCARTf11Pfh0HT0ZZU1tXAHtKf3gFWUdbBkZHYUV8OE49E0ZEFxdBIRMXJAQcICRNTCJGSzsQB1dzYlJPTwh8AQxENFNRXH5WGQhZRmBcTgUKQ3x_BVpPYjMgCBYKPzwKdUgECkVXDlwMIQcdCBgMdwJWewV7XFRUAVAPHwc2Qj11T35-VFB9SVpnVE4JIhN1PBA2fnJdRlsCTk9FRA16eQhHfXBRVgEpGxsWBygJIENIHkBHRRIYHmoTHicTT1BGUwxGSR4aQRASCVBFX01eAwJNc3gRVE5Zd01EU1QDVUlIEzRTBRlCHCATGRgUIBlrRxxVRU0fFB48Fh0gGEM8QDZNcgpJVwJWT0ZVTV9ZTwERQgEGASQWG0MEJ1NaAAJHNUpzBlBWf1dLTVBKWlxQBwpIdQ52TUBQDFAiHBFMN1I2FElDGxBCJBIbHTkfHyhGTSVFTz0VHyBGEghq",
   };
-
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
   await axios
