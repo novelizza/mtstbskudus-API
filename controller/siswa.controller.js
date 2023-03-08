@@ -87,11 +87,12 @@ const postSiswa = async (req, res) => {
     datetime_expired: "2023-03-10T00:00:00+07:00",
     description: "Payment testing",
     trx_id: "invoice-fafa25109999",
-    // type: "updatebilling",
+    type: "updatebilling",
     client_id: "18052",
     customer_email: "fafa_baru@gmail.com",
     customer_phone: "6282235451766",
     customer_name: "ACFA",
+    virtual_account: "9881805123030814",
   };
   // type: "createbilling",
   // client_id: "18051",
