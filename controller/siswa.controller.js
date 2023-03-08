@@ -111,42 +111,42 @@ const postSiswa = async (req, res) => {
     )
     .then(async (result) => {
       console.log(result.data);
-      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
-      const akunSiswa = await akunSiswaModel.findOne({
-        where: {
-          username: req.body.username,
-        },
-      });
+      // const akunSiswa = await akunSiswaModel.findOne({
+      //   where: {
+      //     username: req.body.username,
+      //   },
+      // });
 
-      if (!akunSiswa) {
-        if (req.file == undefined) {
-          setContent(201, "image upload failed.");
-          return res.status(201).json(getContent());
-        } else {
-          try {
-            const newSiswa = new akunSiswaModel(req.body);
-            newSiswa.password = crypto.MD5(req.body.password).toString();
-            newSiswa.avatar = req.file.filename;
-            newSiswa.tahun_masuk =
-              moment().year() + "/" + (Number(moment().year()) + 1);
-            newSiswa.bayar = 0;
-            newSiswa.va = parsed_string.virtual_account;
-            newSiswa.trx_id = parsed_string.trx_id;
+      // if (!akunSiswa) {
+      //   if (req.file == undefined) {
+      //     setContent(201, "image upload failed.");
+      //     return res.status(201).json(getContent());
+      //   } else {
+      //     try {
+      //       const newSiswa = new akunSiswaModel(req.body);
+      //       newSiswa.password = crypto.MD5(req.body.password).toString();
+      //       newSiswa.avatar = req.file.filename;
+      //       newSiswa.tahun_masuk =
+      //         moment().year() + "/" + (Number(moment().year()) + 1);
+      //       newSiswa.bayar = 0;
+      //       newSiswa.va = parsed_string.virtual_account;
+      //       newSiswa.trx_id = parsed_string.trx_id;
 
-            await newSiswa.save();
+      //       await newSiswa.save();
 
-            setContent(200, "Siswa Berhasil Ditambahkan");
-            return res.status(200).json(getContent());
-          } catch (error) {
-            setContent(500, error);
-            return res.status(500).json(getContent());
-          }
-        }
-      } else {
-        setContent(500, "Username Telah Terdaftar");
-        return res.status(500).json(getContent());
-      }
+      //       setContent(200, "Siswa Berhasil Ditambahkan");
+      //       return res.status(200).json(getContent());
+      //     } catch (error) {
+      //       setContent(500, error);
+      //       return res.status(500).json(getContent());
+      //     }
+      //   }
+      // } else {
+      //   setContent(500, "Username Telah Terdaftar");
+      //   return res.status(500).json(getContent());
+      // }
     })
     .catch((er) => {
       console.log("------------------------");
