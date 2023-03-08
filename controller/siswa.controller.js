@@ -87,7 +87,7 @@ const postSiswa = async (req, res) => {
     datetime_expired: "2023-03-10T00:00:00+07:00",
     description: "Payment testing",
     trx_id: "invoice-828282",
-    type: "updateBilling",
+    type: "updatebilling",
     customer_email: "fafa_baru@gmail.com",
     customer_phone: "6282235451766",
     customer_name: "Coba Siswa5",
