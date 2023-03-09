@@ -11,7 +11,7 @@ const Akun = db.define(
       autoIncrement: true,
     },
     id_akun_siswa: { type: Sequelize.INTEGER },
-    tinggal_luar_negri_ayah: { type: Sequelize.BOOLEAN },
+    tinggal_luar_negeri_ayah: { type: Sequelize.BOOLEAN },
     kepemilikan_rumah_ayah: {
       type: Sequelize.ENUM(
         "MILIK SENDIRI",
