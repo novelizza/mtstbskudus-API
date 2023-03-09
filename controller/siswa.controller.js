@@ -83,8 +83,8 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    type: "updatebilling",
-    client_id: "",
+    type: "updatebillin",
+    client_id: CID,
     trx_id: "invoice-",
     trx_amount: "250000",
     customer_name: "ubah fafa",
