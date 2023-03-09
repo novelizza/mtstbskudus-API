@@ -20,6 +20,8 @@ const uploadAvatar = multer({
 
 const siswaRoutes = express.Router();
 
+siswaRoutes.use(express.json());
+
 siswaRoutes
   .route("/")
   //web siswa
@@ -68,7 +70,6 @@ siswaRoutes
 siswaRoutes
   .route("/callback")
   //test callback
-  .use(express.json())
   .post(siswaCtrl.callbackURL);
 //test callback
 // .get(siswaCtrl.callbackURL);
