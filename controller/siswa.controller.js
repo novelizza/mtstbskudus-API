@@ -90,7 +90,7 @@ const postSiswa = async (req, res) => {
     customer_name: "ubah fafa",
     customer_email: "novel.izza.fardana@gmail.com",
     customer_phone: "082235451766",
-    date_expired: "2023-03-10",
+    date_expired: "10-04-2023",
     description: "test billing",
   };
   // type: "createbilling",
