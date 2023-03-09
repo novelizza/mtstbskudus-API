@@ -83,15 +83,9 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    type: "updatebilling",
-    client_id: CID,
+    type: "inquirybilling",
+    client_id: "18099",
     trx_id: "invoice-99991025",
-    trx_amount: "250000",
-    customer_name: "ubah fafa",
-    customer_email: "novel.izza.fardana@gmail.com",
-    customer_phone: "",
-    date_expired: "2023-03-10T23:00:00+07:00",
-    description: "test billing",
   };
   // type: "createbilling",
   // client_id: CID,
