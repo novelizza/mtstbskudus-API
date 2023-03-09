@@ -108,9 +108,7 @@ const postSiswa = async (req, res) => {
       }
     )
     .then(async (result) => {
-      console.log(result.data);
       const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
-      console.log(parsed_string);
       const akunSiswa = await akunSiswaModel.findOne({
         where: {
           username: req.body.username,
@@ -130,7 +128,7 @@ const postSiswa = async (req, res) => {
             newSiswa.bayar = 0;
             newSiswa.va = parsed_string.virtual_account;
             newSiswa.trx_id = parsed_string.trx_id;
-            await newSiswa.save();
+            (newSiswa.keterangan = "0"), await newSiswa.save();
             setContent(200, "Siswa Berhasil Ditambahkan");
             return res.status(200).json(getContent());
           } catch (error) {
