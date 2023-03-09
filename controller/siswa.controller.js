@@ -108,9 +108,6 @@ const postSiswa = async (req, res) => {
       }
     )
     .then(async (result) => {
-      console.log("-----------------------------------");
-      console.log(result.data);
-      console.log("-----------------------------------");
       const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
       const akunSiswa = await akunSiswaModel.findOne({
         where: {
@@ -145,26 +142,23 @@ const postSiswa = async (req, res) => {
       }
     })
     .catch((er) => {
-      console.log("------------------------");
-      console.log(er.response.data);
-      console.log("------------------------");
       setContent(500, "BNI VA ERROR");
       return res.status(500).json(getContent());
     });
 };
 
-const callbackURL = async (req, res) => {
-  console.log("buka callback");
+// const callbackURL = async (req, res) => {
+//   console.log("buka callback");
 
-  console.log(req);
-  console.log("-------------------------------------");
-  console.log(req.body);
-  console.log("-------------------------------------");
-  console.log(res);
-  console.log("tutup callback");
-  setContent(200, req.body);
-  return res.status(200).json(getContent());
-};
+//   console.log(req);
+//   console.log("-------------------------------------");
+//   console.log(req.body);
+//   console.log("-------------------------------------");
+//   console.log(res);
+//   console.log("tutup callback");
+//   setContent(200, req.body);
+//   return res.status(200).json(getContent());
+// };
 
 const ubahSiswa = async (req, res) => {
   const akunSiswa = await akunSiswaModel.findOne({
@@ -475,5 +469,5 @@ export default {
   getDataAlamat,
   prestasi_siswa,
   getDataPrestasi,
-  callbackURL,
+  // callbackURL,
 };

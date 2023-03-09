@@ -20,7 +20,7 @@ const uploadAvatar = multer({
 
 const siswaRoutes = express.Router();
 
-siswaRoutes.use(express.json());
+// siswaRoutes.use(express.json());
 
 siswaRoutes
   .route("/")
@@ -67,11 +67,9 @@ siswaRoutes
   //insert data prestasi
   .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.prestasi_siswa);
 
-siswaRoutes
-  .route("/callback")
-  //test callback
-  .post(siswaCtrl.callbackURL);
-//test callback
-// .get(siswaCtrl.callbackURL);
+// siswaRoutes
+//   .route("/callback")
+//   //test callback
+//   .post(siswaCtrl.callbackURL);
 
 export default siswaRoutes;
