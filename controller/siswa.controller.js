@@ -111,7 +111,7 @@ const postSiswa = async (req, res) => {
   const dataReqVA = {
     type: "createbilling",
     client_id: CID,
-    trx_id: "invoice-" + req.body.nisn + new Date().getHours(),
+    trx_id: "invoice-" + req.body.nisn + new Date().getMinutes(),
     trx_amount: "200000",
     billing_type: "c",
     customer_name: req.body.nama_lengkap,
@@ -157,10 +157,10 @@ const postSiswa = async (req, res) => {
           )
           .then(async (result) => {
             const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
-            console.log({
-              dataBNI: parsed_string,
-              dataBody: req.body,
-            });
+            // console.log({
+            //   dataBNI: parsed_string,
+            //   dataBody: req.body,
+            // });
 
             try {
               await akunSiswaModel.update(
