@@ -83,7 +83,7 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    type: "inquirybilling",
+    type: "inquirybillin",
     client_id: "",
     trx_id: "invoice-99991025",
   };
@@ -113,10 +113,10 @@ const postSiswa = async (req, res) => {
     .then(async (result) => {
       console.log(result.data);
 
-      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
-      setContent(200, { dataAsli: result.data, dataDecrypt: parsed_string });
-      // setContent(200, result.data);
+      // setContent(200, { dataAsli: result.data, dataDecrypt: parsed_string });
+      setContent(200, result.data);
       return res.status(200).json(getContent());
 
       // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
