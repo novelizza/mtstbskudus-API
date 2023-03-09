@@ -155,6 +155,9 @@ const postSiswa = async (req, res) => {
 
 const callbackURL = async (req, res) => {
   console.log(req);
+  console.log("-------------------------------------");
+  console.log(req.body);
+  console.log("-------------------------------------");
   setContent(200, req.body);
   return res.status(200).json(getContent());
 };
