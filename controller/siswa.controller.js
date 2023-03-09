@@ -84,7 +84,7 @@ const postSiswa = async (req, res) => {
 
   const dataReqVA = {
     type: "updatebilling",
-    client_id: "18022",
+    client_id: "",
     trx_id: "invoice-",
     trx_amount: "250000",
     customer_name: "ubah fafa",
