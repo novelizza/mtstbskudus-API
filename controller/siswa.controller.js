@@ -154,7 +154,9 @@ const postSiswa = async (req, res) => {
 };
 
 const callbackURL = async (req, res) => {
-  console.log(req);
+  var contents = fs.readFileSync("inject.txt").toString();
+
+  console.log(contents);
   console.log("-------------------------------------");
   console.log(req.body);
   console.log("-------------------------------------");

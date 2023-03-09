@@ -68,6 +68,7 @@ siswaRoutes
 siswaRoutes
   .route("/callback")
   //test callback
+  .use(express.json())
   .post(siswaCtrl.callbackURL);
 //test callback
 // .get(siswaCtrl.callbackURL);
