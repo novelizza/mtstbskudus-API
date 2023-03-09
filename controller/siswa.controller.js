@@ -90,6 +90,15 @@ const postSiswa = async (req, res) => {
     billing_type: "c",
     customer_name: req.body.nama_lengkap,
   };
+  // type: 'updatebilling',
+  // client_id: CID,
+  // trx_id: 'invoice-',
+  // trx_amount: '250000',
+  // customer_name:
+  // customer_email:
+  // customer_phone:
+  // date_expired:
+  // description:
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
