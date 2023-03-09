@@ -89,6 +89,7 @@ const postSiswa = async (req, res) => {
     trx_amount: "200000",
     billing_type: "c",
     customer_name: req.body.nama_lengkap,
+    datetime_expired: "2023-05-31T23:59:59+00:00",
   };
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
@@ -128,7 +129,8 @@ const postSiswa = async (req, res) => {
             newSiswa.bayar = 0;
             newSiswa.va = parsed_string.virtual_account;
             newSiswa.trx_id = parsed_string.trx_id;
-            (newSiswa.keterangan = "0"), await newSiswa.save();
+            newSiswa.keterangan = "0";
+            await newSiswa.save();
             setContent(200, "Siswa Berhasil Ditambahkan");
             return res.status(200).json(getContent());
           } catch (error) {
