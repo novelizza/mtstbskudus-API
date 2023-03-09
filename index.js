@@ -7,9 +7,7 @@ const app = express();
 
 app.use("/api", route);
 
-app.listen(process.env.PORT, () =>
-  console.log("Server is running at port " + process.env.PORT)
-);
+app.listen(process.env.PORT, () => console.log("Server already running "));
 app.get("/", (req, res) => {
   res.send("Use /api to url base TBS API");
 });
