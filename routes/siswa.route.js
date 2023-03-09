@@ -68,7 +68,7 @@ siswaRoutes
   .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.prestasi_siswa);
 
 siswaRoutes
-  .route("/callback")
+  .route("/callbacka")
   //test callback
   .post(siswaCtrl.callbackURL);
 //test callback
