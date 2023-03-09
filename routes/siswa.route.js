@@ -24,7 +24,7 @@ const siswaRoutes = express.Router();
 
 siswaRoutes
   .route("/")
-  //web siswa
+  //web siswa dashboard
   .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getSiswa)
   //register siswa
   .post(uploadAvatar.single("avatar"), siswaCtrl.postSiswa)

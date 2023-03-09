@@ -34,6 +34,22 @@ const getSiswa = async (req, res) => {
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
+      const getDataSiswa = await dataSiswaModel.findOne({
+        where: {
+          id_akun_siswa: req.sessionData.id_akun_siswa,
+        },
+      });
+      const getDataOrangtua = await dataOrangTuaModel.findOne({
+        where: {
+          id_akun_siswa: req.sessionData.id_akun_siswa,
+        },
+      });
+      const getDataAlamat = await dataAlamatModel.findOne({
+        where: {
+          id_akun_siswa: req.sessionData.id_akun_siswa,
+        },
+      });
+
       const dataInquiry = {
         type: "inquirybilling",
         client_id: CID,
@@ -59,11 +75,21 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          setContent(200, {
-            data_siswa: getSiswa,
-            statusVa: parsed_string.va_status,
-          });
-          return res.status(200).json(getContent());
+          if (!getDataSiswa || !getDataOrangtua || !getDataAlamat) {
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: parsed_string.va_status,
+              isLengkap: "0",
+            });
+            return res.status(200).json(getContent());
+          } else {
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: parsed_string.va_status,
+              isLengkap: "1",
+            });
+            return res.status(200).json(getContent());
+          }
         })
         .catch((er) => {
           setContent(500, "BNI VA ERROR");
@@ -94,74 +120,93 @@ const postSiswa = async (req, res) => {
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
-  await axios
-    .post(
-      URL,
-      JSON.stringify({
-        client_id: CID,
-        prefix: PRX,
-        data: ecrypt_string,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-    .then(async (result) => {
-      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
-      const akunSiswa = await akunSiswaModel.findOne({
-        where: {
-          username: req.body.username,
-        },
-      });
-      if (!akunSiswa) {
-        if (req.file == undefined) {
-          setContent(201, "image upload failed.");
-          return res.status(201).json(getContent());
-        } else {
-          try {
-            const newSiswa = new akunSiswaModel(req.body);
-            newSiswa.password = crypto.MD5(req.body.password).toString();
-            newSiswa.avatar = req.file.filename;
-            newSiswa.tahun_masuk =
-              moment().year() + "/" + (Number(moment().year()) + 1);
-            newSiswa.bayar = 0;
-            newSiswa.va = parsed_string.virtual_account;
-            newSiswa.trx_id = parsed_string.trx_id;
-            newSiswa.keterangan = "0";
-            await newSiswa.save();
-            setContent(200, "Siswa Berhasil Ditambahkan");
-            return res.status(200).json(getContent());
-          } catch (error) {
-            setContent(500, error);
-            return res.status(500).json(getContent());
-          }
-        }
-      } else {
-        setContent(500, "Username Telah Terdaftar");
+  const akunSiswa = await akunSiswaModel.findOne({
+    where: {
+      username: req.body.username,
+    },
+  });
+  if (!akunSiswa) {
+    if (req.file == undefined) {
+      setContent(201, "image upload failed.");
+      return res.status(201).json(getContent());
+    } else {
+      try {
+        const newSiswa = new akunSiswaModel(req.body);
+        newSiswa.password = crypto.MD5(req.body.password).toString();
+        newSiswa.avatar = req.file.filename;
+        newSiswa.tahun_masuk =
+          moment().year() + "/" + (Number(moment().year()) + 1);
+        newSiswa.bayar = 0;
+        newSiswa.keterangan = "0";
+
+        await newSiswa.save();
+
+        await axios
+          .post(
+            URL,
+            JSON.stringify({
+              client_id: CID,
+              prefix: PRX,
+              data: ecrypt_string,
+            }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then(async (result) => {
+            const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+            console.log({
+              dataBNI: parsed_string,
+              dataBody: req.body,
+            });
+
+            try {
+              await akunSiswaModel.update(
+                {
+                  va: parsed_string.virtual_account,
+                  trx_id: parsed_string.trx_id,
+                },
+                {
+                  where: {
+                    nisn: req.body.nisn,
+                  },
+                }
+              );
+
+              setContent(200, "Siswa Berhasil Ditambahkan");
+              return res.status(200).json(getContent());
+            } catch (error) {
+              setContent(500, "Update Error");
+              return res.status(200).json(getContent());
+            }
+          })
+          .catch(async (er) => {
+            try {
+              await akunSiswaModel.destroy({
+                where: {
+                  nisn: req.body.nisn,
+                },
+              });
+              console.log(er.response);
+              setContent(500, "Siswa Gagal Dibuat!");
+              return res.status(200).json(getContent());
+            } catch (error) {
+              setContent(500, error);
+              return res.status(500).json(getContent());
+            }
+          });
+      } catch (error) {
+        setContent(500, error);
         return res.status(500).json(getContent());
       }
-    })
-    .catch((er) => {
-      console.log(er.response);
-      setContent(500, "BNI VA ERROR");
-      return res.status(500).json(getContent());
-    });
+    }
+  } else {
+    setContent(500, "Username Telah Terdaftar");
+    return res.status(500).json(getContent());
+  }
 };
-
-// const callbackURL = async (req, res) => {
-//   console.log("buka callback");
-
-//   console.log(req);
-//   console.log("-------------------------------------");
-//   console.log(req.body);
-//   console.log("-------------------------------------");
-//   console.log(res);
-//   console.log("tutup callback");
-//   setContent(200, req.body);
-//   return res.status(200).json(getContent());
-// };
 
 const ubahSiswa = async (req, res) => {
   const akunSiswa = await akunSiswaModel.findOne({
@@ -175,8 +220,6 @@ const ubahSiswa = async (req, res) => {
       req.body.password === ""
         ? (req.body.password = akunSiswa.password)
         : (req.body.password = crypto.MD5(req.body.password).toString());
-
-      console.log(req.body);
 
       await akunSiswaModel.update(req.body, {
         where: {
@@ -472,5 +515,4 @@ export default {
   getDataAlamat,
   prestasi_siswa,
   getDataPrestasi,
-  // callbackURL,
 };
