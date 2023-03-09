@@ -89,7 +89,7 @@ const postSiswa = async (req, res) => {
     trx_amount: "250000",
     customer_name: "ubah fafa",
     customer_email: "novel.izza.fardana@gmail.com",
-    customer_phone: "0811081108110811",
+    customer_phone: "",
     date_expired: "2023-03-10T23:00:00+07:00",
     description: "test billing",
   };
