@@ -85,7 +85,7 @@ const postSiswa = async (req, res) => {
   const dataReqVA = {
     type: "updatebilling",
     client_id: CID,
-    trx_id: "invoice-0101983961",
+    trx_id: "invoice-01019839619999999999990",
     trx_amount: "250000",
     customer_name: "ubah fafa",
     customer_email: "novel.izza.fardana@gmail.com",
@@ -119,9 +119,10 @@ const postSiswa = async (req, res) => {
     .then(async (result) => {
       console.log(result.data);
 
-      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
 
-      setContent(200, { dataAsli: result.data, dataDecrypt: parsed_string });
+      // setContent(200, { dataAsli: result.data, dataDecrypt: parsed_string });
+      setContent(200, result.data);
       return res.status(200).json(getContent());
 
       // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
