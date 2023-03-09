@@ -67,7 +67,9 @@ siswaRoutes
 
 siswaRoutes
   .route("/callback")
-  //insert data prestasi
-  .post(siswaCtrl.callbackURL);
+  //test callback
+  .post(siswaCtrl.callbackURL)
+  //test callback
+  .get(siswaCtrl.callbackURL);
 
 export default siswaRoutes;
