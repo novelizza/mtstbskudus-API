@@ -65,4 +65,9 @@ siswaRoutes
   //insert data prestasi
   .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.prestasi_siswa);
 
+siswaRoutes
+  .route("/callback")
+  //insert data prestasi
+  .post(siswaCtrl.callbackURL);
+
 export default siswaRoutes;

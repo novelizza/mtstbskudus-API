@@ -83,16 +83,13 @@ const postSiswa = async (req, res) => {
   const URL = process.env.BASEURL_BNI.toString();
 
   const dataReqVA = {
-    type: "inquirybilling",
+    type: "createbilling",
     client_id: CID,
-    trx_id: "",
+    trx_id: "invoice-" + req.body.nisn,
+    trx_amount: "200000",
+    billing_type: "c",
+    customer_name: req.body.nama_lengkap,
   };
-  // type: "createbilling",
-  // client_id: CID,
-  // trx_id: "invoice-" + req.body.nisn,
-  // trx_amount: "200000",
-  // billing_type: "c",
-  // customer_name: req.body.nama_lengkap,
 
   const ecrypt_string = BniEnc.encrypt(dataReqVA, CID, SCK);
 
@@ -163,6 +160,12 @@ const postSiswa = async (req, res) => {
       setContent(500, "BNI VA ERROR");
       return res.status(500).json(getContent());
     });
+};
+
+const callbackURL = async (req, res) => {
+  console.log(req.body);
+  setContent(200, req.body);
+  return res.status(200).json(getContent());
 };
 
 const ubahSiswa = async (req, res) => {
@@ -474,4 +477,5 @@ export default {
   getDataAlamat,
   prestasi_siswa,
   getDataPrestasi,
+  callbackURL,
 };
