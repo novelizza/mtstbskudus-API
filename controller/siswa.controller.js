@@ -108,7 +108,9 @@ const postSiswa = async (req, res) => {
       }
     )
     .then(async (result) => {
+      console.log(result.data);
       const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+      console.log(parsed_string);
       const akunSiswa = await akunSiswaModel.findOne({
         where: {
           username: req.body.username,
