@@ -154,12 +154,14 @@ const postSiswa = async (req, res) => {
 };
 
 const callbackURL = async (req, res) => {
-  var contents = fs.readFileSync("inject.txt").toString();
+  console.log("buka callback");
 
-  console.log(contents);
+  console.log(req);
   console.log("-------------------------------------");
   console.log(req.body);
   console.log("-------------------------------------");
+  console.log(res);
+  console.log("tutup callback");
   setContent(200, req.body);
   return res.status(200).json(getContent());
 };
