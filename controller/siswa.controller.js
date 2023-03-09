@@ -120,7 +120,9 @@ const postSiswa = async (req, res) => {
     .then(async (result) => {
       console.log(result.data);
 
-      setContent(200, result.data);
+      const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
+
+      setContent(200, { dataAsli: result.data, dataDecrypt: parsed_string });
       return res.status(200).json(getContent());
 
       // const parsed_string = BniEnc.decrypt(result.data.data, CID, SCK);
