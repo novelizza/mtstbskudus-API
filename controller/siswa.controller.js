@@ -85,7 +85,7 @@ const postSiswa = async (req, res) => {
   const dataReqVA = {
     type: "inquirybilling",
     client_id: CID,
-    trx_id: "invoice-9999102599",
+    trx_id: "invoice-0101983961",
   };
   // type: "createbilling",
   // client_id: CID,
