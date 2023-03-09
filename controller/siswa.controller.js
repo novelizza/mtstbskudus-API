@@ -92,7 +92,7 @@ const postSiswa = async (req, res) => {
     customer_phone: "082235451766",
     date_expired: "2023-03-10T23:00:00+07:00",
     description: "test billing",
-    billing_type: "o",
+    billing_type: "a",
   };
   // type: "createbilling",
   // client_id: CID,
