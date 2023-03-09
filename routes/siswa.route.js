@@ -68,7 +68,7 @@ siswaRoutes
 siswaRoutes
   .route("/callback")
   //test callback
-  .post(siswaCtrl.callbackURL)
+  // .post(siswaCtrl.callbackURL)
   //test callback
   .get(siswaCtrl.callbackURL);
 
