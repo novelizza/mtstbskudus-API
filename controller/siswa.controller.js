@@ -174,7 +174,7 @@ const postSiswa = async (req, res) => {
                   },
                 }
               );
-
+              console.log("Berhasil menambahkan Siswa");
               setContent(200, "Siswa Berhasil Ditambahkan");
               return res.status(200).json(getContent());
             } catch (error) {
@@ -198,6 +198,7 @@ const postSiswa = async (req, res) => {
             }
           });
       } catch (error) {
+        console.log(error);
         setContent(500, error);
         return res.status(500).json(getContent());
       }
