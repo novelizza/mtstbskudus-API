@@ -83,6 +83,7 @@ const getSiswa = async (req, res) => {
             });
             return res.status(200).json(getContent());
           } else if (req.sessionData.id_akun_siswa === 146) {
+            console.log("ricooo kesini");
             setContent(200, {
               data_siswa: getSiswa,
               statusVa: "2",
