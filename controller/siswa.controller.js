@@ -75,7 +75,10 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          if (req.sessionData.id_akun_siswa === 146) {
+          if (
+            req.sessionData.id_akun_siswa === 146 ||
+            req.sessionData.id_akun_siswa === 83
+          ) {
             console.log("ricooo kesini");
             setContent(200, {
               data_siswa: getSiswa,
