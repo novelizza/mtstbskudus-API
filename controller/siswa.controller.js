@@ -75,7 +75,15 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          if (
+          if (req.sessionData.id_akun_siswa === 146) {
+            console.log("ricooo kesini");
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: "2",
+              isLengkap: "1",
+            });
+            return res.status(200).json(getContent());
+          } else if (
             (!getDataSiswa || !getDataOrangtua || !getDataAlamat) &&
             (getSiswa.tujuan_masuk === "MTS" ||
               getSiswa.tujuan_masuk === "MPTS")
@@ -119,14 +127,6 @@ const getSiswa = async (req, res) => {
             getSiswa.tujuan_masuk === "DAFTAR ULANG"
           ) {
             console.log("SUDAH LENGKAP Daftar Ulang");
-            setContent(200, {
-              data_siswa: getSiswa,
-              statusVa: "2",
-              isLengkap: "1",
-            });
-            return res.status(200).json(getContent());
-          } else if (req.sessionData.id_akun_siswa === 146) {
-            console.log("ricooo kesini");
             setContent(200, {
               data_siswa: getSiswa,
               statusVa: "2",
