@@ -75,11 +75,54 @@ const getSiswa = async (req, res) => {
         .then((resultBNI) => {
           const parsed_string = BniEnc.decrypt(resultBNI.data.data, CID, SCK);
 
-          if (!getDataSiswa || !getDataOrangtua || !getDataAlamat) {
+          if (
+            (!getDataSiswa || !getDataOrangtua || !getDataAlamat) &&
+            (getSiswa.tujuan_masuk === "MTS" ||
+              getSiswa.tujuan_masuk === "MPTS")
+          ) {
+            console.log("BELUM LENGKAP MTS/MPTS");
             setContent(200, {
               data_siswa: getSiswa,
               statusVa: parsed_string.va_status,
               isLengkap: "0",
+            });
+            return res.status(200).json(getContent());
+          } else if (
+            (!getDataSiswa || !getDataOrangtua || !getDataAlamat) &&
+            getSiswa.tujuan_masuk === "DAFTAR ULANG"
+          ) {
+            console.log("BELUM LENGKAP Daftar Ulang");
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: "2",
+              isLengkap: "0",
+            });
+            return res.status(200).json(getContent());
+          } else if (
+            getDataSiswa &&
+            getDataOrangtua &&
+            getDataAlamat &&
+            (getSiswa.tujuan_masuk === "MTS" ||
+              getSiswa.tujuan_masuk === "MPTS")
+          ) {
+            console.log("SUDAH LENGKAP MTS MPTS");
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: parsed_string.va_status,
+              isLengkap: "1",
+            });
+            return res.status(200).json(getContent());
+          } else if (
+            getDataSiswa &&
+            getDataOrangtua &&
+            getDataAlamat &&
+            getSiswa.tujuan_masuk === "DAFTAR ULANG"
+          ) {
+            console.log("SUDAH LENGKAP Daftar Ulang");
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: "2",
+              isLengkap: "1",
             });
             return res.status(200).json(getContent());
           } else if (req.sessionData.id_akun_siswa === 146) {
@@ -91,12 +134,7 @@ const getSiswa = async (req, res) => {
             });
             return res.status(200).json(getContent());
           } else {
-            setContent(200, {
-              data_siswa: getSiswa,
-              statusVa: parsed_string.va_status,
-              isLengkap: "1",
-            });
-            return res.status(200).json(getContent());
+            null;
           }
         })
         .catch((er) => {
