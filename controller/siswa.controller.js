@@ -82,6 +82,13 @@ const getSiswa = async (req, res) => {
               isLengkap: "0",
             });
             return res.status(200).json(getContent());
+          } else if (req.sessionData.id_akun_siswa === 146) {
+            setContent(200, {
+              data_siswa: getSiswa,
+              statusVa: "2",
+              isLengkap: "1",
+            });
+            return res.status(200).json(getContent());
           } else {
             setContent(200, {
               data_siswa: getSiswa,
