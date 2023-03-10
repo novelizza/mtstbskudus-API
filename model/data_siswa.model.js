@@ -33,6 +33,7 @@ const Akun = db.define(
       type: Sequelize.ENUM("Orang Tua", "Wali"),
     },
     kebutuhan_khusus: { type: Sequelize.BOOLEAN },
+    asal_sekolah: { type: Sequelize.STRING },
     prasekolah: { type: Sequelize.STRING },
     kip: { type: Sequelize.STRING },
     kk: { type: Sequelize.STRING },
