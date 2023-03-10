@@ -112,7 +112,7 @@ const postSiswa = async (req, res) => {
     type: "createbilling",
     client_id: CID,
     trx_id: "invoice-" + req.body.nisn + new Date().getMinutes(),
-    trx_amount: "200000",
+    trx_amount: "192000",
     billing_type: "c",
     customer_name: req.body.nama_lengkap,
     datetime_expired: "2023-05-31T23:59:59+00:00",
