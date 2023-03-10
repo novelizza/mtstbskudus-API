@@ -45,7 +45,7 @@ const Akun = db.define(
         "DIATAS 5000000"
       ),
     },
-    nomor_hp_ayah: { type: Sequelize.STRING },
+    no_hp_ayah: { type: Sequelize.STRING },
 
     nama_lengkap_ibu: { type: Sequelize.STRING },
     status_ibu: {
@@ -80,7 +80,7 @@ const Akun = db.define(
         "DIATAS 5000000"
       ),
     },
-    nomor_hp_ibu: { type: Sequelize.STRING },
+    no_hp_ibu: { type: Sequelize.STRING },
 
     nama_lengkap_wali: { type: Sequelize.STRING },
     kewarganegaraan_wali: { type: Sequelize.BOOLEAN },
@@ -112,7 +112,7 @@ const Akun = db.define(
         "DIATAS 5000000"
       ),
     },
-    nomor_hp_wali: { type: Sequelize.STRING },
+    no_hp_wali: { type: Sequelize.STRING },
   },
   {
     freezeTableName: true,
