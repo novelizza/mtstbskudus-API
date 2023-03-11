@@ -468,10 +468,10 @@ const data_alamat = async (req, res) => {
         setContent(500, error);
         return res.status(500).json(getContent());
       }
+    } else if (dataAlamat[1] === true) {
+      setContent(200, "Data Alamat Berhasil Ditambahkan!");
+      return res.status(200).json(getContent());
     }
-
-    setContent(200, "Data Alamat Berhasil Ditambahkan!");
-    return res.status(200).json(getContent());
   } catch (error) {
     setContent(500, error);
     return res.status(500).json(getContent());
@@ -499,37 +499,70 @@ const getDataAlamat = async (req, res) => {
 };
 
 const prestasi_siswa = async (req, res) => {
-  const getDataPrestasi = await prestasiSiswaModel.findAll({
-    where: {
-      id_akun_siswa: req.sessionData.id_akun_siswa,
-    },
-  });
-  if (!getDataPrestasi || getDataPrestasi.length < 3) {
-    try {
-      let newPrestasi = new prestasiSiswaModel(req.body);
-      newPrestasi.id_akun_siswa = req.sessionData.id_akun_siswa;
+  // const getDataPrestasi = await prestasiSiswaModel.findAll({
+  //   where: {
+  //     id_akun_siswa: req.sessionData.id_akun_siswa,
+  //   },
+  // });
+  // if (!getDataPrestasi || getDataPrestasi.length < 3) {
+  //   try {
+  //     let newPrestasi = new prestasiSiswaModel(req.body);
+  //     newPrestasi.id_akun_siswa = req.sessionData.id_akun_siswa;
 
-      await newPrestasi.save();
+  //     await newPrestasi.save();
+  //     setContent(200, "Prestasi Berhasil Ditambahkan");
+  //     return res.status(200).json(getContent());
+  //   } catch (error) {
+  //     setContent(500, error);
+  //     return res.status(500).json(getContent());
+  //   }
+  // } else {
+  //   try {
+  //     await prestasiSiswaModel.update(req.body, {
+  //       where: {
+  //         id_akun_siswa: req.sessionData.id_akun_siswa,
+  //         prestasi_ke: req.body.prestasi_ke,
+  //       },
+  //     });
+  //     setContent(200, "Prestasi Berhasil Diubah");
+  //     return res.status(200).json(getContent());
+  //   } catch (error) {
+  //     setContent(500, error);
+  //     return res.status(500).json(getContent());
+  //   }
+  // }
+
+  try {
+    let getDataPrestasi = await prestasiSiswaModel.findOrCreate({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+        prestasi_ke: req.body.prestasi_ke,
+      },
+      defaults: req.body,
+    });
+
+    if (getDataPrestasi[1] === false) {
+      try {
+        await prestasiSiswaModel.update(req.body, {
+          where: {
+            id_akun_siswa: req.sessionData.id_akun_siswa,
+            prestasi_ke: req.body.prestasi_ke,
+          },
+        });
+        setContent(200, "Prestasi Berhasil Diubah");
+        return res.status(200).json(getContent());
+      } catch (error) {
+        setContent(500, error);
+        return res.status(500).json(getContent());
+      }
+    } else if (getDataPrestasi[1] === true) {
       setContent(200, "Prestasi Berhasil Ditambahkan");
       return res.status(200).json(getContent());
-    } catch (error) {
-      setContent(500, error);
-      return res.status(500).json(getContent());
+    } else {
     }
-  } else {
-    try {
-      await prestasiSiswaModel.update(req.body, {
-        where: {
-          id_akun_siswa: req.sessionData.id_akun_siswa,
-          prestasi_ke: req.body.prestasi_ke,
-        },
-      });
-      setContent(200, "Prestasi Berhasil Diubah");
-      return res.status(200).json(getContent());
-    } catch (error) {
-      setContent(500, error);
-      return res.status(500).json(getContent());
-    }
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
   }
 };
 
@@ -544,7 +577,11 @@ const getDataPrestasi = async (req, res) => {
       setContent(404, "Tidak Ada Prestasi yang Ditampilkan!");
       return res.status(404).json(getContent());
     } else {
-      setContent(200, getDataPrestasi);
+      setContent(200, {
+        prestasi1: getDataPrestasi.find((item1) => item1.prestasi_ke === "1"),
+        prestasi2: getDataPrestasi.find((item2) => item2.prestasi_ke === "2"),
+        prestasi3: getDataPrestasi.find((item3) => item3.prestasi_ke === "3"),
+      });
       return res.status(200).json(getContent());
     }
   } catch (error) {
