@@ -581,6 +581,8 @@ const getDataPrestasi = async (req, res) => {
       // const p2 = getDataPrestasi.find((item2) => item2.prestasi_ke === "2");
       // const p3 = getDataPrestasi.find((item3) => item3.prestasi_ke === "3");
 
+      console.log(p1);
+
       setContent(200, {
         prestasi1: "p1",
         prestasi2: "p2",
