@@ -412,10 +412,11 @@ const data_orang_tua = async (req, res) => {
         setContent(500, error);
         return res.status(500).json(getContent());
       }
+    } else if (dataOrangTua[1] === true) {
+      console.log(dataOrangTua);
+      setContent(200, "Data Orang Tua Berhasil Ditambahkan!");
+      return res.status(200).json(getContent());
     }
-
-    setContent(200, "Data Orang Tua Berhasil Ditambahkan!");
-    return res.status(200).json(getContent());
   } catch (error) {
     setContent(500, error);
     return res.status(500).json(getContent());
