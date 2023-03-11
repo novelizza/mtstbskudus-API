@@ -568,26 +568,35 @@ const prestasi_siswa = async (req, res) => {
 
 const getDataPrestasi = async (req, res) => {
   try {
-    const getDataPrestasi = await prestasiSiswaModel.findAll({
+    const getDataPrestasi1 = await prestasiSiswaModel.findOne({
       where: {
         id_akun_siswa: req.sessionData.id_akun_siswa,
+        prestasi_ke: "1",
       },
     });
-    if (!getDataPrestasi) {
-      setContent(404, "Tidak Ada Prestasi yang Ditampilkan!");
-      return res.status(404).json(getContent());
-    } else {
-      const p1 = getDataPrestasi.find((item1) => item1.prestasi_ke === "1");
-      const p2 = getDataPrestasi.find((item2) => item2.prestasi_ke === "2");
-      const p3 = getDataPrestasi.find((item3) => item3.prestasi_ke === "3");
+    const getDataPrestasi2 = await prestasiSiswaModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+        prestasi_ke: "2",
+      },
+    });
+    const getDataPrestasi3 = await prestasiSiswaModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+        prestasi_ke: "3",
+      },
+    });
+    // if (!getDataPrestasi) {
+    //   setContent(404, "Tidak Ada Prestasi yang Ditampilkan!");
+    //   return res.status(404).json(getContent());
+    // } else {
 
-      setContent(200, {
-        prestasi1: "p1",
-        prestasi2: "p2",
-        prestasi3: "p3",
-      });
-      return res.status(200).json(getContent());
-    }
+    setContent(200, {
+      prestasi1: getDataPrestasi1,
+      prestasi2: getDataPrestasi2,
+      prestasi3: getDataPrestasi3,
+    });
+    return res.status(200).json(getContent());
   } catch (error) {
     setContent(500, error);
     return res.status(500).json(getContent());
