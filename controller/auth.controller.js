@@ -37,7 +37,7 @@ const authSiswa = async (req, res) => {
       .toString();
     const sessionEnc = crypto.MD5(sessionHash).toString();
     const now = moment(Date.now()).tz("Asia/Jakarta").format();
-    const sessionExpiry = moment(now).add(1, "d").tz("Asia/Jakarta");
+    const sessionExpiry = moment(now).add(14, "d").tz("Asia/Jakarta");
     const diff = sessionExpiry.diff(now) / 1000;
 
     try {
