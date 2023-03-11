@@ -14,7 +14,7 @@ const Akun = db.define(
     username: { type: Sequelize.STRING },
     password: { type: Sequelize.STRING },
     nama_lengkap: { type: Sequelize.STRING },
-    nisn: { type: Sequelize.INTEGER },
+    nisn: { type: Sequelize.STRING },
     tempat_lahir: { type: Sequelize.STRING },
     tanggal_lahir: { type: Sequelize.DATEONLY },
     tahun_masuk: { type: Sequelize.STRING },
