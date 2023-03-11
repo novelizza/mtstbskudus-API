@@ -17,13 +17,13 @@ const checkSessionSiswa = async (req, res, next) => {
       setContent(401, "Sesi Tidak Ditemukan!");
       return res.status(401).json(getContent());
     } else {
-      if (findSession.expired_at < moment(now)) {
-        setContent(401, "Sesi Telah Habis!");
-        return res.status(401).json(getContent());
-      } else {
-        req.sessionData = findSession;
-        return next();
-      }
+      // if (findSession.expired_at < moment(now)) {
+      //   setContent(401, "Sesi Telah Habis!");
+      //   return res.status(401).json(getContent());
+      // } else {
+      req.sessionData = findSession;
+      return next();
+      // }
     }
   } catch (error) {
     setContent(400, "Bad Request");
