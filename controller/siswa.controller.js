@@ -578,10 +578,8 @@ const getDataPrestasi = async (req, res) => {
       return res.status(404).json(getContent());
     } else {
       const p1 = getDataPrestasi.find((item1) => item1.prestasi_ke === "1");
-      // const p2 = getDataPrestasi.find((item2) => item2.prestasi_ke === "2");
-      // const p3 = getDataPrestasi.find((item3) => item3.prestasi_ke === "3");
-
-      console.log(getDataPrestasi.dataValues.prestasi_ke);
+      const p2 = getDataPrestasi.find((item2) => item2.prestasi_ke === "2");
+      const p3 = getDataPrestasi.find((item3) => item3.prestasi_ke === "3");
 
       setContent(200, {
         prestasi1: "p1",
