@@ -62,10 +62,17 @@ siswaRoutes
 
 siswaRoutes
   .route("/data-prestasi")
-  //insert data prestasi
+  //get data prestasi
   .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getDataPrestasi)
   //insert data prestasi
   .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.prestasi_siswa);
+
+siswaRoutes
+  .route("/ujian")
+  //insert data alamat
+  // .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getDataAlamat)
+  //insert data alamat
+  .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.createDataUjian);
 
 // siswaRoutes
 //   .route("/callback")

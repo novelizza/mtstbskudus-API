@@ -3,6 +3,7 @@ import dataAlamatModel from "../model/data_alamat.model.js";
 import dataOrangTuaModel from "../model/data_orang_tua.model.js";
 import dataSiswaModel from "../model/data_siswa.model.js";
 import prestasiSiswaModel from "../model/prestasi_siswa.model.js";
+import ujianModel from "../model/ujian.model.js";
 
 import response from "../response/index.js";
 import crypto from "crypto-js";
@@ -586,10 +587,6 @@ const getDataPrestasi = async (req, res) => {
         prestasi_ke: "3",
       },
     });
-    // if (!getDataPrestasi) {
-    //   setContent(404, "Tidak Ada Prestasi yang Ditampilkan!");
-    //   return res.status(404).json(getContent());
-    // } else {
 
     setContent(200, {
       prestasi1: getDataPrestasi1,
@@ -598,6 +595,60 @@ const getDataPrestasi = async (req, res) => {
     });
     return res.status(200).json(getContent());
   } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const createDataUjian = async (req, res) => {
+  try {
+    const getDataSiswa = await dataSiswaModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+      },
+    });
+    const getDataOrangtua = await dataOrangTuaModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+      },
+    });
+    const getDataAlamat = await dataAlamatModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+      },
+    });
+
+    if (!getDataSiswa || !getDataOrangtua || !getDataAlamat) {
+      try {
+        let isUjian = await ujianModel.findOrCreate({
+          where: {
+            id_akun_siswa: req.sessionData.id_akun_siswa,
+          },
+          defaults: {
+            id_akun_siswa: req.sessionData.id_akun_siswa,
+          },
+        });
+
+        if (isUjian[1] === false) {
+          console.log("save ujian lagi");
+          setContent(200, "Data Ujian Terdaftar!");
+          return res.status(200).json(getContent());
+        } else if (isUjian[1] === true) {
+          console.log("save ujian");
+          setContent(200, "Data Ujian terdaftar!");
+          return res.status(200).json(getContent());
+        }
+      } catch (error) {
+        console.log("error add ujian");
+        setContent(500, error);
+        return res.status(500).json(getContent());
+      }
+    } else {
+      setContent(500, "data belum lengkap");
+      return res.status(500).json(getContent());
+    }
+  } catch (error) {
+    console.log("error get data siswa, ortu, alamat");
     setContent(500, error);
     return res.status(500).json(getContent());
   }
@@ -616,4 +667,5 @@ export default {
   getDataAlamat,
   prestasi_siswa,
   getDataPrestasi,
+  createDataUjian,
 };
