@@ -618,7 +618,7 @@ const createDataUjian = async (req, res) => {
       },
     });
 
-    if (!getDataSiswa || !getDataOrangtua || !getDataAlamat) {
+    if (getDataSiswa && getDataOrangtua && getDataAlamat) {
       try {
         let isUjian = await ujianModel.findOrCreate({
           where: {
