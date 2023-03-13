@@ -11,6 +11,7 @@ const Ujian = db.define(
       autoIncrement: true,
     },
     id_akun_siswa: { type: Sequelize.INTEGER },
+    nomor_ujian: { type: Sequelize.STRING },
   },
   {
     freezeTableName: true,

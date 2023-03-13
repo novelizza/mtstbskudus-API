@@ -35,17 +35,7 @@ const getSiswa = async (req, res) => {
       setContent(404, "Siswa Tidak Ditemukan!");
       return res.status(404).json(getContent());
     } else {
-      const getDataSiswa = await dataSiswaModel.findOne({
-        where: {
-          id_akun_siswa: req.sessionData.id_akun_siswa,
-        },
-      });
-      const getDataOrangtua = await dataOrangTuaModel.findOne({
-        where: {
-          id_akun_siswa: req.sessionData.id_akun_siswa,
-        },
-      });
-      const getDataAlamat = await dataAlamatModel.findOne({
+      const getDataUjian = await ujianModel.findOne({
         where: {
           id_akun_siswa: req.sessionData.id_akun_siswa,
         },
@@ -85,10 +75,11 @@ const getSiswa = async (req, res) => {
               data_siswa: getSiswa,
               statusVa: "2",
               isLengkap: "1",
+              dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
           } else if (
-            (!getDataSiswa || !getDataOrangtua || !getDataAlamat) &&
+            !getDataUjian &&
             (getSiswa.tujuan_masuk === "MTS" ||
               getSiswa.tujuan_masuk === "MPTS")
           ) {
@@ -97,10 +88,11 @@ const getSiswa = async (req, res) => {
               data_siswa: getSiswa,
               statusVa: parsed_string.va_status,
               isLengkap: "0",
+              dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
           } else if (
-            (!getDataSiswa || !getDataOrangtua || !getDataAlamat) &&
+            !getDataUjian &&
             getSiswa.tujuan_masuk === "DAFTAR ULANG"
           ) {
             console.log("BELUM LENGKAP Daftar Ulang");
@@ -108,12 +100,11 @@ const getSiswa = async (req, res) => {
               data_siswa: getSiswa,
               statusVa: "2",
               isLengkap: "0",
+              dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
           } else if (
-            getDataSiswa &&
-            getDataOrangtua &&
-            getDataAlamat &&
+            getDataUjian &&
             (getSiswa.tujuan_masuk === "MTS" ||
               getSiswa.tujuan_masuk === "MPTS")
           ) {
@@ -122,19 +113,16 @@ const getSiswa = async (req, res) => {
               data_siswa: getSiswa,
               statusVa: parsed_string.va_status,
               isLengkap: "1",
+              dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
-          } else if (
-            getDataSiswa &&
-            getDataOrangtua &&
-            getDataAlamat &&
-            getSiswa.tujuan_masuk === "DAFTAR ULANG"
-          ) {
+          } else if (getDataUjian && getSiswa.tujuan_masuk === "DAFTAR ULANG") {
             console.log("SUDAH LENGKAP Daftar Ulang");
             setContent(200, {
               data_siswa: getSiswa,
               statusVa: "2",
               isLengkap: "1",
+              dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
           } else {
@@ -500,39 +488,6 @@ const getDataAlamat = async (req, res) => {
 };
 
 const prestasi_siswa = async (req, res) => {
-  // const getDataPrestasi = await prestasiSiswaModel.findAll({
-  //   where: {
-  //     id_akun_siswa: req.sessionData.id_akun_siswa,
-  //   },
-  // });
-  // if (!getDataPrestasi || getDataPrestasi.length < 3) {
-  //   try {
-  //     let newPrestasi = new prestasiSiswaModel(req.body);
-  //     newPrestasi.id_akun_siswa = req.sessionData.id_akun_siswa;
-
-  //     await newPrestasi.save();
-  //     setContent(200, "Prestasi Berhasil Ditambahkan");
-  //     return res.status(200).json(getContent());
-  //   } catch (error) {
-  //     setContent(500, error);
-  //     return res.status(500).json(getContent());
-  //   }
-  // } else {
-  //   try {
-  //     await prestasiSiswaModel.update(req.body, {
-  //       where: {
-  //         id_akun_siswa: req.sessionData.id_akun_siswa,
-  //         prestasi_ke: req.body.prestasi_ke,
-  //       },
-  //     });
-  //     setContent(200, "Prestasi Berhasil Diubah");
-  //     return res.status(200).json(getContent());
-  //   } catch (error) {
-  //     setContent(500, error);
-  //     return res.status(500).json(getContent());
-  //   }
-  // }
-
   try {
     let getDataPrestasi = await prestasiSiswaModel.findOrCreate({
       where: {
@@ -634,9 +589,38 @@ const createDataUjian = async (req, res) => {
           setContent(200, "Data Ujian Terdaftar!");
           return res.status(200).json(getContent());
         } else if (isUjian[1] === true) {
-          console.log("save ujian");
-          setContent(200, "Data Ujian terdaftar!");
-          return res.status(200).json(getContent());
+          try {
+            const getDataUjian = await ujianModel.findOne({
+              where: {
+                id_akun_siswa: req.sessionData.id_akun_siswa,
+              },
+            });
+
+            await prestasiSiswaModel.update(
+              {
+                nomor_ujian:
+                  "20232024" +
+                  (getDataUjian.id_ujian.toString().length === 1
+                    ? "00" + getDataUjian.id_ujian
+                    : getDataUjian.id_ujian.toString().length === 2
+                    ? "0" + getDataUjian.id_ujian
+                    : getDataUjian.id_ujian),
+              },
+              {
+                where: {
+                  id_akun_siswa: req.sessionData.id_akun_siswa,
+                },
+              }
+            );
+
+            console.log("save ujian");
+            setContent(200, "Data Ujian terdaftar!");
+            return res.status(200).json(getContent());
+          } catch (error) {
+            console.log("error update ujian");
+            setContent(500, error);
+            return res.status(500).json(getContent());
+          }
         }
       } catch (error) {
         console.log("error add ujian");
