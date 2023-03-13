@@ -69,10 +69,10 @@ siswaRoutes
 
 siswaRoutes
   .route("/ujian")
-  //insert data alamat
-  // .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getDataAlamat)
-  //insert data alamat
   .post(middlewareCtrl.checkSessionSiswa, siswaCtrl.createDataUjian);
+//insert data alamat
+// .get(middlewareCtrl.checkSessionSiswa, siswaCtrl.getDataAlamat)
+//insert data alamat
 
 // siswaRoutes
 //   .route("/callback")
