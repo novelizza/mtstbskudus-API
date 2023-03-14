@@ -608,15 +608,17 @@ const createDataUjian = async (req, res) => {
               },
             });
 
+            const noUjian =
+              "20232024" +
+              (getDataUjian.id_ujian.toString().length === 1
+                ? "00" + getDataUjian.id_ujian
+                : getDataUjian.id_ujian.toString().length === 2
+                ? "0" + getDataUjian.id_ujian
+                : getDataUjian.id_ujian.toString());
+
             await prestasiSiswaModel.update(
               {
-                nomor_ujian:
-                  "20232024" +
-                  (getDataUjian.id_ujian.toString().length === 1
-                    ? "00" + getDataUjian.id_ujian
-                    : getDataUjian.id_ujian.toString().length === 2
-                    ? "0" + getDataUjian.id_ujian
-                    : getDataUjian.id_ujian),
+                nomor_ujian: noUjian,
               },
               {
                 where: {
