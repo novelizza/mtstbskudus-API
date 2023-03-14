@@ -68,7 +68,8 @@ const getSiswa = async (req, res) => {
 
           if (
             req.sessionData.id_akun_siswa === 146 ||
-            req.sessionData.id_akun_siswa === 83
+            req.sessionData.id_akun_siswa === 83 ||
+            req.sessionData.id_akun_siswa === 411
           ) {
             console.log("ricooo kesini");
             setContent(200, {
