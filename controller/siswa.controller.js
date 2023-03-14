@@ -597,7 +597,20 @@ const createDataUjian = async (req, res) => {
         });
 
         if (isUjian[1] === false) {
-          console.log("save ujian lagi");
+          // console.log("save ujian lagi");
+
+          const noUjian =
+            "20232024" +
+            (getDataUjian.id_ujian.toString().length === 1
+              ? "00" + getDataUjian.id_ujian
+              : getDataUjian.id_ujian.toString().length === 2
+              ? "0" + getDataUjian.id_ujian
+              : getDataUjian.id_ujian.toString());
+
+          console.log("---------------------------");
+          console.log(noUjian);
+          console.log("---------------------------");
+
           setContent(200, "Data Ujian Terdaftar!");
           return res.status(200).json(getContent());
         } else if (isUjian[1] === true) {
