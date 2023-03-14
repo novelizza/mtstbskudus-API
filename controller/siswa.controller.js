@@ -616,6 +616,10 @@ const createDataUjian = async (req, res) => {
                 ? "0" + getDataUjian.id_ujian
                 : getDataUjian.id_ujian.toString());
 
+            console.log("---------------------------");
+            console.log(noUjian);
+            console.log("---------------------------");
+
             await prestasiSiswaModel.update(
               {
                 nomor_ujian: noUjian,
