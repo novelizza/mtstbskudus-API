@@ -597,6 +597,11 @@ const createDataUjian = async (req, res) => {
         });
 
         if (isUjian[1] === false) {
+          const getDataUjian = await ujianModel.findOne({
+            where: {
+              id_akun_siswa: req.sessionData.id_akun_siswa,
+            },
+          });
           // console.log("save ujian lagi");
 
           const noUjian =
