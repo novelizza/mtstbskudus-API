@@ -75,7 +75,7 @@ const getSiswa = async (req, res) => {
             setContent(200, {
               data_siswa: getSiswa,
               statusVa: "2",
-              isLengkap: "1",
+              isLengkap: "0",
               dataUjian: getDataUjian,
             });
             return res.status(200).json(getContent());
