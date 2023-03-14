@@ -640,9 +640,11 @@ const createDataUjian = async (req, res) => {
         return res.status(500).json(getContent());
       }
     } else if (getAkunSiswa.tujuan_masuk !== "MTS") {
+      console.log("tidak masuk mts");
       setContent(500, "tidak masuk mts");
       return res.status(500).json(getContent());
     } else {
+      console.log("data belum lengkap");
       setContent(500, "data belum lengkap");
       return res.status(500).json(getContent());
     }
