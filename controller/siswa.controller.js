@@ -620,28 +620,22 @@ const createDataUjian = async (req, res) => {
             console.log(noUjian);
             console.log("---------------------------");
 
-            try {
-              await prestasiSiswaModel.update(
-                {
-                  nomor_ujian: noUjian,
+            await ujianModel.update(
+              {
+                nomor_ujian: noUjian,
+              },
+              {
+                where: {
+                  id_akun_siswa: req.sessionData.id_akun_siswa,
                 },
-                {
-                  where: {
-                    id_akun_siswa: req.sessionData.id_akun_siswa,
-                  },
-                }
-              );
+              }
+            );
 
-              console.log("save ujian");
-              setContent(200, "Data Ujian terdaftar!");
-              return res.status(200).json(getContent());
-            } catch (error) {
-              console.log("error update");
-              setContent(500, error);
-              return res.status(500).json(getContent());
-            }
+            console.log("save ujian");
+            setContent(200, "Data Ujian terdaftar!");
+            return res.status(200).json(getContent());
           } catch (error) {
-            console.log("error find");
+            console.log("error update");
             setContent(500, error);
             return res.status(500).json(getContent());
           }
