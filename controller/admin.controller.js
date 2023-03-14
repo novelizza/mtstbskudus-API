@@ -362,9 +362,22 @@ const detailSiswaAdmin = async (req, res) => {
         id_akun_siswa: req.body.id_akun_siswa,
       },
     });
-    const getDataPrestasi = await prestasiSiswa.findOne({
+    const getDataPrestasi1 = await prestasiSiswa.findOne({
       where: {
         id_akun_siswa: req.body.id_akun_siswa,
+        prestasi_ke: "1",
+      },
+    });
+    const getDataPrestasi2 = await prestasiSiswa.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+        prestasi_ke: "2",
+      },
+    });
+    const getDataPrestasi3 = await prestasiSiswa.findOne({
+      where: {
+        id_akun_siswa: req.body.id_akun_siswa,
+        prestasi_ke: "3",
       },
     });
 
@@ -373,7 +386,9 @@ const detailSiswaAdmin = async (req, res) => {
       data_siswa: getDataSiswa,
       data_orangtua: getDataOrangtua,
       data_alamat: getDataAlamat,
-      data_prestasi: getDataPrestasi,
+      data_prestasi1: getDataPrestasi1,
+      data_prestasi2: getDataPrestasi2,
+      data_prestasi3: getDataPrestasi3,
     };
     setContent(200, result);
     return res.status(200).json(getContent());
