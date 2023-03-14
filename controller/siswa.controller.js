@@ -574,7 +574,18 @@ const createDataUjian = async (req, res) => {
       },
     });
 
-    if (getDataSiswa && getDataOrangtua && getDataAlamat) {
+    const getAkunSiswa = await akunSiswaModel.findOne({
+      where: {
+        id_akun_siswa: req.sessionData.id_akun_siswa,
+      },
+    });
+
+    if (
+      getDataSiswa &&
+      getDataOrangtua &&
+      getDataAlamat &&
+      getAkunSiswa.tujuan_masuk === "MTS"
+    ) {
       try {
         let isUjian = await ujianModel.findOrCreate({
           where: {
@@ -628,6 +639,9 @@ const createDataUjian = async (req, res) => {
         setContent(500, error);
         return res.status(500).json(getContent());
       }
+    } else if (getAkunSiswa.tujuan_masuk !== "MTS") {
+      setContent(500, "tidak masuk mts");
+      return res.status(500).json(getContent());
     } else {
       setContent(500, "data belum lengkap");
       return res.status(500).json(getContent());
