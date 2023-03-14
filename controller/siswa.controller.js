@@ -597,25 +597,7 @@ const createDataUjian = async (req, res) => {
         });
 
         if (isUjian[1] === false) {
-          const getDataUjian = await ujianModel.findOne({
-            where: {
-              id_akun_siswa: req.sessionData.id_akun_siswa,
-            },
-          });
-          // console.log("save ujian lagi");
-
-          const noUjian =
-            "20232024" +
-            (getDataUjian.id_ujian.toString().length === 1
-              ? "00" + getDataUjian.id_ujian
-              : getDataUjian.id_ujian.toString().length === 2
-              ? "0" + getDataUjian.id_ujian
-              : getDataUjian.id_ujian.toString());
-
-          console.log("---------------------------");
-          console.log(noUjian);
-          console.log("---------------------------");
-
+          console.log("save ujian lagi");
           setContent(200, "Data Ujian Terdaftar!");
           return res.status(200).json(getContent());
         } else if (isUjian[1] === true) {
@@ -638,22 +620,28 @@ const createDataUjian = async (req, res) => {
             console.log(noUjian);
             console.log("---------------------------");
 
-            await prestasiSiswaModel.update(
-              {
-                nomor_ujian: noUjian,
-              },
-              {
-                where: {
-                  id_akun_siswa: req.sessionData.id_akun_siswa,
+            try {
+              await prestasiSiswaModel.update(
+                {
+                  nomor_ujian: noUjian,
                 },
-              }
-            );
+                {
+                  where: {
+                    id_akun_siswa: req.sessionData.id_akun_siswa,
+                  },
+                }
+              );
 
-            console.log("save ujian");
-            setContent(200, "Data Ujian terdaftar!");
-            return res.status(200).json(getContent());
+              console.log("save ujian");
+              setContent(200, "Data Ujian terdaftar!");
+              return res.status(200).json(getContent());
+            } catch (error) {
+              console.log("error update");
+              setContent(500, error);
+              return res.status(500).json(getContent());
+            }
           } catch (error) {
-            console.log("error update ujian");
+            console.log("error find");
             setContent(500, error);
             return res.status(500).json(getContent());
           }
