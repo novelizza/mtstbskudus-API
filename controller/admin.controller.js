@@ -260,7 +260,9 @@ const isiNilai = async (req, res) => {
     return res.status(200).json(getContent());
   } else {
     try {
+      console, log("------------------");
       console.log(req.body);
+      console, log("------------------");
       await akunSiswaModel.update(
         {
           nilai: req.body.nilai,

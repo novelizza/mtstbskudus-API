@@ -390,6 +390,7 @@ const data_orang_tua = async (req, res) => {
     });
 
     if (dataOrangTua[1] === false) {
+      console.log(req.body);
       try {
         await dataOrangTuaModel.update(req.body, {
           where: {
@@ -403,7 +404,6 @@ const data_orang_tua = async (req, res) => {
         return res.status(500).json(getContent());
       }
     } else if (dataOrangTua[1] === true) {
-      console.log(dataOrangTua);
       setContent(200, "Data Orang Tua Berhasil Ditambahkan!");
       return res.status(200).json(getContent());
     }
