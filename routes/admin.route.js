@@ -94,6 +94,14 @@ adminRoutes
   .post(middlewareCtrl.checkSessionAdmin, adminCtrl.searchSiswaAdmin);
 
 adminRoutes
+  .route("/datamts-siswa")
+  .get(middlewareCtrl.checkSessionAdmin, adminCtrl.dataSiswaMTSAdmin);
+
+adminRoutes
+  .route("/datampts-siswa")
+  .get(middlewareCtrl.checkSessionAdmin, adminCtrl.dataSiswaMPTSAdmin);
+
+adminRoutes
   .route("/detail-siswa")
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.detailSiswaAdmin);
 

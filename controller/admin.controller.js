@@ -321,6 +321,34 @@ const dataSiswaAdmin = async (req, res) => {
   }
 };
 
+const dataSiswaMTSAdmin = async (req, res) => {
+  try {
+    const [getAllMTSSiswa, metadata] = await akunSiswaModel.sequelize.query(
+      "SELECT * from datasiswaadmin where tujuan_masuk='MTS'"
+    );
+
+    setContent(200, getAllMTSSiswa);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
+const dataSiswaMPTSAdmin = async (req, res) => {
+  try {
+    const [getAllMPTSSiswa, metadata] = await akunSiswaModel.sequelize.query(
+      "SELECT * from datasiswaadmin where tujuan_masuk='MPTS'"
+    );
+
+    setContent(200, getAllMPTSSiswa);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
 const searchSiswaAdmin = async (req, res) => {
   try {
     const [getAllSiswa, metadata] = await akunSiswaModel.sequelize.query(
@@ -513,4 +541,6 @@ export default {
   searchCetakDataAdmin,
   postBrosur,
   getDataBrosur,
+  dataSiswaMTSAdmin,
+  dataSiswaMPTSAdmin,
 };
