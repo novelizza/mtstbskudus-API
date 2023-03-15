@@ -32,7 +32,8 @@ const Akun = db.define(
         "DOSEN/GURU",
         "PEGAWAI SWASTA",
         "WIRASWASTA",
-        "BURUH (TANI/PABRIK/BANGUNAN)"
+        "BURUH (TANI/PABRIK/BANGUNAN)",
+        "LAINNYA"
       ),
     },
     penghasilan_rata_rata_ayah: {
@@ -67,7 +68,8 @@ const Akun = db.define(
         "DOSEN/GURU",
         "PEGAWAI SWASTA",
         "WIRASWASTA",
-        "BURUH (TANI/PABRIK/BANGUNAN)"
+        "BURUH (TANI/PABRIK/BANGUNAN)",
+        "LAINNYA"
       ),
     },
     penghasilan_rata_rata_ibu: {
@@ -99,7 +101,8 @@ const Akun = db.define(
         "DOSEN/GURU",
         "PEGAWAI SWASTA",
         "WIRASWASTA",
-        "BURUH (TANI/PABRIK/BANGUNAN)"
+        "BURUH (TANI/PABRIK/BANGUNAN)",
+        "LAINNYA"
       ),
     },
     penghasilan_rata_rata_wali: {
