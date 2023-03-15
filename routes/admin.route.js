@@ -102,6 +102,10 @@ adminRoutes
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.dataSiswaMPTSAdmin);
 
 adminRoutes
+  .route("/datadaftarulang-siswa")
+  .get(middlewareCtrl.checkSessionAdmin, adminCtrl.dataSiswaDaftarUlangAdmin);
+
+adminRoutes
   .route("/detail-siswa")
   .get(middlewareCtrl.checkSessionAdmin, adminCtrl.detailSiswaAdmin);
 
