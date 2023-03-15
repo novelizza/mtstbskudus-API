@@ -349,6 +349,21 @@ const dataSiswaMPTSAdmin = async (req, res) => {
   }
 };
 
+const dataSiswaDaftarUlangAdmin = async (req, res) => {
+  try {
+    const [getAllDaftarUlangSiswa, metadata] =
+      await akunSiswaModel.sequelize.query(
+        "SELECT * from datasiswaadmin where tujuan_masuk='DAFTAR ULANG'"
+      );
+
+    setContent(200, getAllDaftarUlangSiswa);
+    return res.status(200).json(getContent());
+  } catch (error) {
+    setContent(500, error);
+    return res.status(500).json(getContent());
+  }
+};
+
 const searchSiswaAdmin = async (req, res) => {
   try {
     const [getAllSiswa, metadata] = await akunSiswaModel.sequelize.query(
@@ -543,4 +558,5 @@ export default {
   getDataBrosur,
   dataSiswaMTSAdmin,
   dataSiswaMPTSAdmin,
+  dataSiswaDaftarUlangAdmin,
 };
