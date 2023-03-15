@@ -379,7 +379,7 @@ const getDataSiswa = async (req, res) => {
 };
 
 const data_orang_tua = async (req, res) => {
-  req.body.id_akun_siswa = req.sessionData.id_akun_siswa;
+  // req.body.id_akun_siswa = req.sessionData.id_akun_siswa;
 
   try {
     let dataOrangTua = await dataOrangTuaModel.findOrCreate({
@@ -393,7 +393,6 @@ const data_orang_tua = async (req, res) => {
       console.log("--------------------");
       console.log(req.body);
       console.log("--------------------");
-      console.log(req.sessionData.id_akun_siswa);
 
       try {
         await dataOrangTuaModel.update(req.body, {
