@@ -390,7 +390,10 @@ const data_orang_tua = async (req, res) => {
     });
 
     if (dataOrangTua[1] === false) {
+      console.log("--------------------");
       console.log(req.body);
+      console.log("--------------------");
+
       try {
         await dataOrangTuaModel.update(req.body, {
           where: {
